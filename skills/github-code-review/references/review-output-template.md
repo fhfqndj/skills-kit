@@ -1,0 +1,123 @@
+# Review Output Template
+
+Use this as the structure for PR review summary comments. Copy and fill in the sections.
+
+## For PR Summary Comment
+
+```markdown
+## Code Review Summary
+
+**Verdict: [Approved ✅ | Changes Requested 🔴 | Reviewed 💬]** ([N] issues, [N] suggestions)
+
+**PR:** #[number] — [title]
+**Author:** @[username]
+**Files changed:** [N] (+[additions] -[deletions])
+
+### 🔴 Critical
+<!-- Issues that MUST be fixed before merge -->
+- **file.py:line** — [description]. Suggestion: [fix].
+
+### ⚠️ Warnings
+<!-- Issues that SHOULD be fixed, but not strictly blocking -->
+- **file.py:line** — [description].
+
+### 💡 Suggestions
+<!-- Non-blocking improvements, style preferences, future considerations -->
+- **file.py:line** — [description].
+
+### ✅ Looks Good
+<!-- Call out things done well — positive reinforcement -->
+- [aspect that was done well]
+
+---
+*Reviewed by the agent*
+```
+
+## Severity Guide
+
+| Level | Icon | When to use | Blocks merge? |
+|-------|------|-------------|---------------|
+| Critical | 🔴 | Security vulnerabilities, data loss risk, crashes, broken core functionality | Yes |
+| Warning | ⚠️ | Bugs in non-critical paths, missing error handling, missing tests for new code | Usually yes |
+| Suggestion | 💡 | Style improvements, refactoring ideas, performance hints, documentation gaps | No |
+| Looks Good | ✅ | Clean patterns, good test coverage, clear naming, smart design decisions | N/A |
+
+## Verdict Decision
+
+- **Approved ✅** — Zero critical/warning items. Only suggestions or all clear.
+- **Changes Requested 🔴** — Any critical or warning item exists.
+- **Reviewed 💬** — Observations only (draft PRs, uncertain findings, informational).
+
+## For Inline Comments
+
+Prefix inline comments with the severity icon so they're scannable:
+
+```
+🔴 **Critical:** User input passed directly to SQL query — use parameterized queries to prevent injection.
+```
+
+```
+⚠️ **Warning:** This error is silently swallowed. At minimum, log it.
+```
+
+```
+💡 **Suggestion:** This could be simplified with a dict comprehension:
+`{k: v for k, v in items if v is not None}`
+```
+
+```
+✅ **Nice:** Good use of context manager here — ensures cleanup on exceptions.
+```
+
+## For Local (Pre-Push) Review
+
+When reviewing locally before push, use the same structure but present it as a message to the user instead of a PR comment. Skip the PR metadata header and just start with the severity sections.
+
+## Local (Pre-Push) Example
+
+```
+## Code Review Summary
+
+### Critical
+- **src/auth.py:45** — SQL injection: user input passed directly to query.
+  Suggestion: Use parameterized queries.
+
+### Warnings
+- **src/models/user.py:23** — Password stored in plaintext. Use bcrypt or argon2.
+- **src/api/routes.py:112** — No rate limiting on login endpoint.
+
+### Suggestions
+- **src/utils/helpers.py:8** — Duplicates logic in `src/core/utils.py:34`. Consolidate.
+- **tests/test_auth.py** — Missing edge case: expired token test.
+
+### Looks Good
+- Clean separation of concerns in the middleware layer
+- Good test coverage for the happy path
+```
+
+## PR Summary Comment — `gh` Command
+
+```bash
+gh pr comment $PR_NUMBER --body "$(cat <<'EOF'
+## Code Review Summary
+
+**Verdict: Changes Requested** (2 issues, 1 suggestion)
+
+### 🔴 Critical
+- **src/auth.py:45** — SQL injection vulnerability
+
+### ⚠️ Warnings
+- **src/models.py:23** — Plaintext password storage
+
+### 💡 Suggestions
+- **src/utils.py:8** — Duplicated logic, consider consolidating
+
+### ✅ Looks Good
+- Clean API design
+- Good error handling in the middleware layer
+
+---
+*Reviewed by the agent*
+EOF
+)"
+```

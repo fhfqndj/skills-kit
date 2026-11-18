@@ -1,0 +1,20 @@
+{
+  "skill": "github-code-review",
+  "positive": [
+    "review this PR and leave inline comments",
+    "review the diffs in PR 42",
+    "review the code in this PR, comment on problems",
+    "read the inline comments and reply",
+    "do a GitHub code review with gh"
+  ],
+  "negative": [
+    {
+      "prompt": "open a PR for my branch",
+      "owner": "github-pr-workflow"
+    },
+    {
+      "prompt": "triage the open issues and label them",
+      "owner": "github-issues"
+    }
+  ]
+}

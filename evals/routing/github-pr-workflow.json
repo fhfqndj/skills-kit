@@ -1,0 +1,20 @@
+{
+  "skill": "github-pr-workflow",
+  "positive": [
+    "open a PR for my branch",
+    "take this change through a PR: branch, commit, push, CI",
+    "the PR CI is red, fix and merge",
+    "merge the PR after CI checks pass",
+    "create a PR and wait for CI"
+  ],
+  "negative": [
+    {
+      "prompt": "review this PR and leave inline comments",
+      "owner": "github-code-review"
+    },
+    {
+      "prompt": "create a new GitHub repo",
+      "owner": "github-repo-management"
+    }
+  ]
+}

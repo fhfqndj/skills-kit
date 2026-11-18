@@ -1,0 +1,20 @@
+{
+  "skill": "subagent-driven-development",
+  "positive": [
+    "выполняй план задача за задачей",
+    "исполняй план по шагам, задача за задачей",
+    "план готов, идём по нему задача за задачей",
+    "работаем по плану задача за задачей",
+    "доведи план до конца, задача за задачей"
+  ],
+  "negative": [
+    {
+      "prompt": "раздели задачу на субагентов",
+      "owner": "delegating-to-subagents"
+    },
+    {
+      "prompt": "write a plan for this task, no execution",
+      "owner": "plan"
+    }
+  ]
+}

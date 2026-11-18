@@ -1,0 +1,20 @@
+{
+  "skill": "github-auth",
+  "positive": [
+    "настрой доступ к GitHub",
+    "gh auth login не работает",
+    "не могу залогиниться в GitHub, нужен доступ",
+    "не пускает в GitHub, ключ не принимается",
+    "настрой SSH-доступ к github"
+  ],
+  "negative": [
+    {
+      "prompt": "give an agent scoped GitHub access",
+      "owner": "github-agent-access"
+    },
+    {
+      "prompt": "open a PR for my branch",
+      "owner": "github-pr-workflow"
+    }
+  ]
+}

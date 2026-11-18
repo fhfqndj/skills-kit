@@ -1,0 +1,20 @@
+{
+  "skill": "github-agent-access",
+  "positive": [
+    "give an agent scoped GitHub access",
+    "set up a GitHub token for the agent with least privilege",
+    "the agent needs GitHub access but not my whole account",
+    "how to give a bot limited access to a GitHub repo",
+    "agent keeps pushing to github, scope its token"
+  ],
+  "negative": [
+    {
+      "prompt": "gh auth login не работает",
+      "owner": "github-auth"
+    },
+    {
+      "prompt": "review this PR and leave inline comments",
+      "owner": "github-code-review"
+    }
+  ]
+}

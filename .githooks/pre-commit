@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+root="$(git rev-parse --show-toplevel 2>/dev/null || true)"
+if [ -z "$root" ]; then
+  echo "pre-commit: не git-репозиторий — пропуск"
+  exit 0
+fi
+cd "$root"
+
+if [ -f ./scripts/check.py ]; then
+  if ! ./scripts/check.py; then
+    echo
+    echo "pre-commit: check.py упал — коммит остановлен, смотри вывод выше."
+    echo "  Если в дереве есть чужая незакоммиченная работа, падение может быть"
+    echo "  из-за неё: это ожидаемо, разберись по 'git status --short'."
+    exit 1
+  fi
+else
+  echo "pre-commit: scripts/check.py нет — проверка целостности пропущена"
+fi
+
+patterns='(password|secret|api_key|token|passwd)[[:space:]]*[:=][[:space:]]*["'\''][^"'\'']{8,}["'\'']|gh[pousr]_[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|AKIA[0-9A-Z]{16}|-----BEGIN [A-Z ]*PRIVATE KEY-----'
+hits="$(git diff --cached -i -G"$patterns" --name-only || true)"
+if [ -n "$hits" ]; then
+  echo "pre-commit: в staged-диффе есть строки, похожие на секреты. Посмотри эти файлы:" >&2
+  printf '%s\n' "$hits" | sed 's/^/  - /' >&2
+  echo "Значение не печатаем намеренно: оно попало бы в лог хука." >&2
+  exit 1
+fi
+
+echo "pre-commit: check.py зелёный, staged-секретов нет"

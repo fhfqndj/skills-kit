@@ -1,0 +1,20 @@
+{
+  "skill": "merge-reconciler",
+  "positive": [
+    "two agents edited the same file and now there's a merge conflict",
+    "reconcile the merge conflict between the two agent branches",
+    "resolve this conflicted merge neutrally",
+    "agent A and agent B both changed main, merge them",
+    "third-party merge conflict resolution"
+  ],
+  "negative": [
+    {
+      "prompt": "нужна вторая копия репозитория под ветку",
+      "owner": "git-worktrees"
+    },
+    {
+      "prompt": "как назвать коммит",
+      "owner": "git-naming"
+    }
+  ]
+}

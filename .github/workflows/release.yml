@@ -1,0 +1,79 @@
+name: release
+
+on:
+  push:
+    tags:
+      - "v*"
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Тег релиза. Пусто — вычислить: тег текущей ревизии или v<version из plugin.json>"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag || github.ref }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Repository check
+        run: make check
+
+      - name: Tests
+        run: make test
+
+      - name: Routing eval
+        run: python3 ./scripts/routing_eval.py --min-rank1 90
+
+      - name: Resolve and verify release tag
+        id: tag
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+        run: |
+          version="v$(python3 -c 'import json; print(json.load(open("plugin.json"))["version"])')"
+          if [ -n "$INPUT_TAG" ]; then
+            tag="$INPUT_TAG"
+          elif [ "$GITHUB_REF_TYPE" = "tag" ]; then
+            tag="$GITHUB_REF_NAME"
+          else
+            tag="$version"
+          fi
+          if [ "$tag" != "$version" ]; then
+            echo "ошибка: тег $tag не совпадает с версией $version из plugin.json — релиз остановлен" >&2
+            exit 1
+          fi
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "version=$version" >> "$GITHUB_OUTPUT"
+
+      - name: Build release artifact
+        run: python3 ./scripts/pack.py --release
+
+      - name: Ensure release exists
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+        run: |
+          gh release view "$TAG" >/dev/null 2>&1 || \
+            gh release create "$TAG" --title "skills-kit $TAG" --generate-notes --target "$GITHUB_SHA"
+
+      - name: Upload release asset
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.tag.outputs.tag }}
+          VERSION: ${{ steps.tag.outputs.version }}
+        run: |
+          zip="dist/skills-kit-${VERSION#v}.zip"
+          test -f "$zip" || { echo "нет артефакта $zip" >&2; exit 1; }
+          gh release upload "$TAG" "$zip"

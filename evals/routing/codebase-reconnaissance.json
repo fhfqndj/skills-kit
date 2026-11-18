@@ -1,0 +1,20 @@
+{
+  "skill": "codebase-reconnaissance",
+  "positive": [
+    "I just cloned this repo, study it and tell me how it works",
+    "help me understand this unfamiliar codebase",
+    "recon this unfamiliar repo: entry points and structure",
+    "what does this codebase do? walk me through the repo",
+    "onboard me on this codebase before I change anything"
+  ],
+  "negative": [
+    {
+      "prompt": "write a plan for this task, no execution",
+      "owner": "plan"
+    },
+    {
+      "prompt": "find the root cause of this bug",
+      "owner": "systematic-debugging"
+    }
+  ]
+}

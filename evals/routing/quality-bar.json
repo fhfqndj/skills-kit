@@ -1,0 +1,20 @@
+{
+  "skill": "quality-bar",
+  "positive": [
+    "планка качества проекта не записана",
+    "запиши планку качества",
+    "какие гейты качества у проекта",
+    "нужен quality bar для проекта",
+    "зафиксируй требования к качеству"
+  ],
+  "negative": [
+    {
+      "prompt": "review this diff before commit",
+      "owner": "requesting-code-review"
+    },
+    {
+      "prompt": "тесты прошли, работа готова?",
+      "owner": "verification-before-completion"
+    }
+  ]
+}
