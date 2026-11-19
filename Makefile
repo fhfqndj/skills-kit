@@ -43,6 +43,11 @@ test:
 	else \
 		echo "scripts/test_verify_install.py нет — пропущено"; \
 	fi
+	@if [ -f ./scripts/test_release_notes.py ]; then \
+		$(PYTHON) ./scripts/test_release_notes.py; \
+	else \
+		echo "scripts/test_release_notes.py нет — пропущено"; \
+	fi
 	@if [ -f ./scripts/test_check_examples.py ]; then \
 		$(PYTHON) ./scripts/test_check_examples.py; \
 	else \
