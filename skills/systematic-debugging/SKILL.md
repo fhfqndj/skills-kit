@@ -1,7 +1,7 @@
 ---
 name: systematic-debugging
 description: "Use when debugging: 4-phase root cause before fixing."
-version: 1.2.1
+version: 1.2.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -195,9 +195,9 @@ pytest tests/test_module.py::test_regression -v   # the regression test
 pytest tests/ -q                                  # full suite, no regressions
 ```
 
-### 4. If Fix Doesn't Work — The Rule of Three
+### 4. If the Fix Doesn't Work — Two Attempts, Then Change the Hypothesis
 
-**STOP.** Count the fixes you have tried. If < 3, return to Phase 1 and re-analyze with new information. **If ≥ 3, STOP and question the architecture (step 5)** — don't attempt Fix #4 without architectural discussion.
+**STOP after the second failed fix.** Return to Phase 1 with new information; a third attempt is allowed only with a different hypothesis, not a variation of the same one. **Three or more failed fixes mean the architecture/assumption is wrong (step 5)** — do not start Fix #4 without that discussion.
 
 ### 5. If 3+ Fixes Failed: Question Architecture
 
@@ -211,7 +211,19 @@ When the fix cannot land immediately, degrade safely instead of crashing: safe d
 
 ## Red Flags — STOP and Follow Process
 
-If you catch yourself thinking "quick fix for now, investigate later", "just try changing X and see if it works", "I don't fully understand but this might work", proposing solutions before tracing data flow, or **"one more fix attempt"** after two failures — STOP and return to Phase 1. The full list of red flags, plus the excuses table with the reality check — `references/rationalizations.md`.
+If you catch yourself thinking "quick fix for now, investigate later", "just try changing X and see if it works", "I don't fully understand but this might work", proposing solutions before tracing data flow, or **"one more fix attempt"** after two failures — STOP and return to Phase 1 with a new hypothesis. The full list of red flags, plus the excuses table with the reality check — `references/rationalizations.md`.
+
+## When the Cause Is Outside Your Control
+
+Not every bug has a root cause you can fix. The cause may be a third-party service, a platform timer, data you do not own, or a race in someone else's binary. The Iron Law is not a promise that the cause is reachable — it is a promise that you do not patch symptoms without one.
+
+When Phase 1 investigation shows the trigger is external, stop looking for your own defect and do three things:
+
+1. **Document what you measured:** which input, environment, version or timing reproduces it, and what you ruled out.
+2. **Contain instead of patch:** a guard, a retry with a bound, a fallback with a warning — and a note that says this is containment, not a fix.
+3. **Hand it over:** an issue with the measurement, a version pin, a monitoring signal that fires when it recurs. Say plainly in the report that the root cause is outside the codebase.
+
+**Do not** loop back to Phase 1 forever, and do not present containment as a fix. A documented external cause is a finished investigation; an unexplained patch is not.
 
 **If 3+ fixes failed:** Question the architecture (Phase 4 step 5).
 
