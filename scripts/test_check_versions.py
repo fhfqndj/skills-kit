@@ -73,6 +73,10 @@ class VersionTests(unittest.TestCase):
         problems = check_versions.check(self.repo, "HEAD~1")
         self.assertTrue(any("не выросла" in p for p in problems), problems)
 
+    def test_unresolvable_base_fails_loudly(self) -> None:
+        with self.assertRaises(SystemExit):
+            check_versions.check(self.repo, "origin/nope-master")
+
     def test_missing_version_is_error(self) -> None:
         path = self.repo / "skills" / "alpha" / "SKILL.md"
         path.write_text("---\nname: alpha\n---\n\nтело\n", encoding="utf-8")
