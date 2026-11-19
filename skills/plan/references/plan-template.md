@@ -27,6 +27,8 @@ Every plan MUST start with:
 **Global Constraints:** [the project's standing bar — coverage, lint, permissions, size limits;
 link `CONSTRAINTS.md` when the project has one. A constraint with no command is not a constraint.]
 
+**Non-goals:** [cut option — the rung that beat it, one per line; `—` when nothing was cut]
+
 ---
 ```
 
@@ -157,6 +159,29 @@ A checkpoint is a checklist, not a paragraph:
 
 **Bad:** "Create the model file"
 **Good:** "Create: `src/models/user.py`"
+
+## Minimal solution ladder
+
+Run this once in Step 3, before choosing patterns and dependencies. Take the first rung that fully
+works; a rung that only partly works is not a rung.
+
+| # | Rung | Question |
+|---|---|---|
+| 1 | Does it need to exist? | Which part of the request would we drop, and who notices? |
+| 2 | Already in this codebase | Is there a helper, component, service or pattern doing this? Use it the way neighbours do. |
+| 3 | Standard library or platform feature | Does the language or the platform already do it? A house component beats a native widget only when it exists. |
+| 4 | An installed dependency | Does a dependency we already ship do it? Never add a dependency for a few lines. |
+| 5 | One line | Can it be one line a reader understands at a glance? |
+| 6 | The minimum that works | Only now write code — the smallest version that covers the task. |
+
+Lazy about the solution, not about the change: read the code the change touches, and never cut
+validation, error handling, security, accessibility or a test for non-trivial logic.
+
+Example — «экспорт CSV»: not a new package with its own writer (rung 4 beaten by rung 3), not a
+`pyexcel` dependency for ten columns; `csv` from the standard library over the existing
+`iter_users()` — six lines, one test.
+
+Every cut option goes to `Non-goals` in the header with the rung that beat it.
 
 ## YAGNI example
 

@@ -14,7 +14,7 @@ asked for? Read the original request, not the author's summary, and verify every
 |---|---|---|
 | Missing | A requested feature, state or error path is absent | Walk the requirements line by line against the diff |
 | Incorrect | Present, but behaves differently: wrong default, wrong sort order, wrong status code | Run the scenario, or read the call path that implements it |
-| Extra | Scope creep: unrequested features, speculative abstractions, premature optimization | Compare every added abstraction with the stated requirement |
+| Extra | Scope creep: unrequested features, speculative abstractions, premature optimization — and code that duplicates what the codebase, the standard library or an installed dependency already does | Compare every added abstraction with the stated requirement **and** with what the repository already has (`grep` for the helper before accepting a new one) |
 
 **Verdict format.** Stage 1 reports PASS or ISSUES with the category of each issue (missing /
 incorrect / extra). Only PASS moves the review to Stage 2 — the five axes, severity and evidence
@@ -31,7 +31,7 @@ three questions per axis are enough — a review is not an essay.
 |---|---|---|
 | Correctness | Does the change do what the task says? Are empty, null, boundary and error paths handled? Would a test fail if the code were wrong? | A user flow breaks or data is lost |
 | Readability | Can a reader understand it without the author? Are names and structure consistent with the project? Is the control flow visible? | The reader cannot tell what the code does |
-| Architecture | Does it follow existing patterns, or introduce a new one — justified? Are module boundaries and dependency direction intact? Is the abstraction level right? | A new pattern is unjustified, a layer is bypassed, a cycle appears |
+| Architecture | Does it follow existing patterns, or introduce a new one — justified? Are module boundaries and dependency direction intact? Is the abstraction level right? Could the codebase, the standard library or an installed dependency already do this? | A new pattern is unjustified, a layer is bypassed, a cycle appears, or a new abstraction duplicates an existing one |
 | Security | Is input validated at the boundary? Are secrets out of code and logs? Are permissions checked? Are queries parameterized? | A vulnerability is reachable without protection |
 | Performance | Any N+1, unbounded loop or fetch, sync work that should be async, missing pagination, avoidable re-renders? | Noticeable degradation on real data |
 
