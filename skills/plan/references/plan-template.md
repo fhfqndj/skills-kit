@@ -16,11 +16,13 @@ Every plan MUST start with:
 
 **Goal:** [One sentence describing what this builds]
 
-**Spec:** [`SPEC.md`](../SPEC.md) — or «нет: restate согласован в чате»
+**Spec:** `<path>/SPEC.md` — or `none: the restate agreed in chat is the spec`
 
 **Architecture:** [2-3 sentences about approach]
 
 **Tech Stack:** [Key technologies/libraries]
+
+**Repository:** `<path>` — work on branch `<branch>`
 
 **Global Constraints:** [the project's standing bar — coverage, lint, permissions, size limits;
 link `CONSTRAINTS.md` when the project has one. A constraint with no command is not a constraint.]
@@ -41,8 +43,8 @@ same numbering as the sections below:
 - [ ] Task 3: [name]
 ```
 
-The executor flips `[ ]` to `[x]` in this file after acceptance; a task without a registry line does
-not exist for it. Keep the registry and the `### Task N` sections in sync.
+A task without a registry line does not exist for the executor. Keep the registry and the
+`### Task N` sections in sync; status lives only in this list.
 
 ### Task Structure
 
@@ -61,6 +63,8 @@ task may rely on]. Without this line the executor of task 3 does not see task 1'
 - [ ] [Specific, testable condition]
 
 When a criterion has more than one condition, write it as a Given/When/Then scenario — the format is in `brainstorming/references/spec-template.md` §7.
+
+**Acceptance command:** the one command that must pass for this task (`make test`, `pytest tests/… -q`)
 
 **Files:**
 - Create: `exact/path/to/new_file.py`
