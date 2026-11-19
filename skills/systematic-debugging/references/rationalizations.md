@@ -14,7 +14,7 @@ thinking, the Reality column is the answer: return to Phase 1.
 | "Multiple fixes at once saves time" | Can't isolate what worked. Causes new bugs. |
 | "Reference too long, I'll adapt the pattern" | Partial understanding guarantees bugs. Read it completely. |
 | "I see the problem, let me fix it" | Seeing symptoms ≠ understanding root cause. |
-| "One more fix attempt" (after 2+ failures) | 3+ failures = architectural problem. Question the pattern, don't fix again. |
+| "One more fix attempt" (after 2+ failures) | Two attempts per hypothesis, then Phase 1 with new information; a third attempt needs a different hypothesis. 3+ failures = architectural problem. |
 
 ## Red Flags — STOP and Follow Process
 
@@ -29,10 +29,10 @@ If you catch yourself thinking:
 - "Pattern says X but I'll adapt it differently"
 - "Here are the main problems: [lists fixes without investigation]"
 - Proposing solutions before tracing data flow
-- **"One more fix attempt" (when already tried 2+)**
+- **"One more fix attempt" with the same hypothesis (after 2 failures)**
 - **Each fix reveals a new problem in a different place**
 - **Continued with the next feature while a test or build was red**
 
 **ALL of these mean: STOP. Return to Phase 1.**
 
-**If 3+ fixes failed:** Question the architecture (Phase 4 step 5).
+**If 3+ fixes failed:** Question the architecture or the assumption (Phase 4 step 5) — a fourth attempt needs that discussion, not a new variation.
