@@ -215,10 +215,9 @@ If you catch yourself thinking "quick fix for now, investigate later", "just try
 
 ## When the Cause Is Outside Your Control
 
-Not every bug has a root cause you can fix. This exit opens only when Phase 1 shows **both**: the
-trigger is external **and** the local handling is correct — an external trigger routinely exposes
-a missing `try`, an unchecked response or a retry storm. Proof, containment by TDD (with a
-regression test) and hand-over — `references/fallbacks.md` § «External cause».
+Причина может быть внешней, но этот выход открывается только когда локальная обработка
+доказанно корректна; сдерживание делается по TDD и не выдаётся за фикс. Условия, доказательство
+и три шага — `references/fallbacks.md` § «External cause».
 
 ## Quick Reference
 
