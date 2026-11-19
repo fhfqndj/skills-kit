@@ -230,7 +230,7 @@ Phase 1 needs four capabilities from the host: search files, read files, run com
 
 ## Real-World Impact
 
-Systematic: 15–30 minutes to fix, 95% first-time fix rate, near-zero new bugs. Random fixes: 2–3 hours of thrashing, 40% first-time, common new bugs. **No shortcuts. No guessing. Systematic always wins.**
+Systematic: the cause is known before the fix, and the fix lands once. Random fixes: hours of thrashing and new bugs on top. **No shortcuts. No guessing. Systematic always wins.**
 
 ## Files
 
