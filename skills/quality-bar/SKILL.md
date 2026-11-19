@@ -87,9 +87,17 @@ Floor не требует ни одного установленного инс�
 | TypeScript | `tsc --noEmit`, `eslint . --max-warnings 0` или `biome check`, `vitest run --coverage` |
 | Секреты | `gitleaks dir . --redact --no-banner` |
 
-Числа — только с командой, которая падает при провале: покрытие изменённых строк ≥ 80% — `diff-cover coverage.xml --fail-under=80`; зависимости — ничего high и выше — `npm audit --audit-level=high` или `pip-audit`; размер бандла — `npx size-limit` с порогами в конфиге. Где есть живой URL: `LCP ≤ 2500` мс и `CLS ≤ 0.1` — `npx @lhci/cli autorun` с assertions в `lighthouserc`; доступность — ноль critical и serious — `npx @axe-core/cli <url> --exit`. Для CLI, десктоп-обёртки и iOS этих проверок нет: там порог — размер артефакта и время отклика команды. Не изобретать проверку, которая не может запуститься: мёртвый гейт хуже отсутствующего.
+Числа — только с командой, которая падает при провале:
 
-Покрытие читать из lcov, который тесты уже пишут, и пересекать с `git diff --unified=0`: второй прогон ради числа — самый быстрый способ возненавидеть планку.
+- покрытие изменённых строк ≥ 80% — тесты пишут XML (`pytest --cov --cov-report=xml`), затем `diff-cover coverage.xml --compare-branch=origin/HEAD --fail-under=80`;
+- зависимости — ничего high и выше — `npm audit --audit-level=high`; для Python `pip-audit -r requirements.txt` падает на любой уязвимости, то есть строже правила (порога severity у него нет);
+- размер бандла — `npx size-limit` с порогами в конфиге;
+- живой URL: `LCP ≤ 2500` мс и `CLS ≤ 0.1` — `npx @lhci/cli autorun` с assertions в `lighthouserc`;
+- доступность — ноль critical и serious: `npx @axe-core/cli <url> --save axe.json`, затем `jq -e '[.[].violations[]? | select(.impact=="critical" or .impact=="serious")] | length == 0' axe.json`.
+
+Предпосылки: `npx`-гейты тянут пакеты из сети, LHCI и axe требуют Chrome/chromedriver, `npm audit` — `package-lock.json`. Нет предпосылок — это не гейт, а аспирация. Для CLI, десктоп-обёртки и iOS этих проверок нет: там порог — размер артефакта и время отклика команды. Не изобретать проверку, которая не может запуститься: мёртвый гейт хуже отсутствующего.
+
+Покрытие читать из отчёта, который тесты уже пишут (XML для `diff-cover`), а не гонять второй раз ради числа: второй прогон — самый быстрый способ возненавидеть планку.
 
 ### 6. Ратчет: записать сегодняшнее и запретить падение
 

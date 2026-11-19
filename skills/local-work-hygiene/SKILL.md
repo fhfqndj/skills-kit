@@ -124,9 +124,13 @@ git rev-parse --abbrev-ref HEAD
 git log -8 --format='%h %ad %s' --date=format:'%m-%d %H:%M'
 git status --short
 git diff --stat
-up=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}')
-git log "$up"..HEAD --oneline        # unpushed
-git rev-list --left-right --count HEAD..."$up"
+up=$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)
+if [ -n "$up" ]; then
+  git log "$up"..HEAD --oneline        # unpushed
+  git rev-list --left-right --count HEAD..."$up"
+else
+  echo "upstream не настроен — состояние 'не запушено' по этой ветке не определить"
+fi
 ```
 
 Явно назвать четыре состояния, потому что они и есть ответ: **закоммичено**, **в работе** (незакоммичено, со счётчиком строк), **не запушено** (хеши и количество), **не начато**. Затем отделить проверенное от заявленного: лог тестов с mtime часовой давности проверял состояние, которого больше нет, — писать «проверено сейчас в HH:MM» только про то, что запускал сам, а старые логи помечать их собственной отметкой времени.
