@@ -120,10 +120,11 @@ skip Steps 5 and 7, apply the Step 4 checklist to the diff yourself, run the tes
 Dispatch the reviewer from the session itself — delegation is not available from inside a script the
 agent runs; one-shot mode and delegation mechanics are host-specific.
 
-The reviewer gets ONLY the diff and static scan results, with no shared context. Fail-closed:
-unparseable response is a fail, and any Critical finding blocks merge. It reviews the five axes,
-names its axis and severity on every finding, returns only the JSON verdict, and needs read-only
-repo access plus permission to run commands (tests, lint) — it must not edit files. Full brief, the
+The reviewer gets the diff, the static scan results and the original task requirements, plus
+read-only access to the repository and permission to run commands (tests, lint) — it must not edit
+files. It reviews Stage 1 (does the diff do what the task asked) and then the five axes, names its
+axis and severity on every finding, and returns only the JSON verdict. Fail-closed: unparseable
+response is a fail, any Critical finding blocks merge. Full brief, the
 fail-closed rules and the JSON shape — `references/reviewer-brief.md`.
 
 ## Verification Story — required for APPROVE
