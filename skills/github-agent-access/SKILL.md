@@ -1,7 +1,7 @@
 ---
 name: github-agent-access
 description: "Use when giving an agent scoped GitHub access."
-version: 1.1.0
+version: 1.1.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -57,11 +57,15 @@ Clone into a sandbox directory (see `local-work-hygiene`), and delete the clone 
 **Prove attribution, not just access.** A push succeeding says nothing about whether the commits land on the right profile:
 
 ```bash
-gh api user/emails --jq '.[] | "\(.email) | primary: \(.primary) | verified: \(.verified)"'   # only these attribute commits
+# Who the API says you are. `.email` is the public profile email; it is null when hidden.
+gh api user --jq '"login: \(.login) | email: \(.email // "hidden")"'
+# Authoritative attribution: does the commit link to an account?
 gh api repos/<owner>/<repo>/commits --jq '.[] | "\(.sha[0:7]) | \(.commit.author.email) | author: \(if .author then .author.login else "UNLINKED" end)"'
 ```
 
-A commit whose `author` comes back `null`/UNLINKED was authored with an email the account does not own — fix the per-repo identity before making more commits, or the whole history stays unattributed.
+A commit whose `author` comes back `null`/UNLINKED was authored with an email no GitHub account owns — fix the per-repo identity before making more commits, or the whole history stays unattributed. A non-null `author` is not proof either: compare it with the `login` printed above — `author: <someone else>` is the same failure with a different label.
+
+Listing the account's emails (`gh api user/emails`) needs the `user:email` scope, which is **not** part of the minimal set above: on a least-privilege token that call fails, and attribution must be judged by the commits endpoint, not by the email list.
 
 **Dry-run the whole cycle in a throwaway repo before writing to a repo the user cares about.** Create a private sandbox repo (with their OK) and run the loop once end to end: first commit on the main branch → feature branch → commit → push branch → push a file under `.github/workflows/` (the only honest proof that the `workflow` scope works) → open a PR → wait for CI with `gh run list` / `gh pr checks` → merge **only after the user says so** → `git checkout <main> && git pull` to resync the clone. Capability claims are worth nothing next to a merged PR and a green check; the same run also shows the user exactly what the agent can and cannot touch.
 
