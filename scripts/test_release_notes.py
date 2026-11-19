@@ -53,6 +53,15 @@ class CliTests(unittest.TestCase):
             self.assertEqual(result.returncode, 0, result.stderr)
             self.assertIn("## 1.3.0", result.stdout)
 
+    def test_cli_fails_without_file(self) -> None:
+        with tempfile.TemporaryDirectory() as tmp:
+            result = subprocess.run(
+                [sys.executable, str(SCRIPTS / "release_notes.py"), "--version", "1.3.0", "--changelog", str(Path(tmp) / "nope.md")],
+                capture_output=True, text=True, check=False,
+            )
+            self.assertEqual(result.returncode, 2)
+            self.assertIn("нет файла", result.stderr)
+
     def test_cli_fails_without_section(self) -> None:
         with tempfile.TemporaryDirectory() as tmp:
             path = Path(tmp) / "CHANGELOG.md"

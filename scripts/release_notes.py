@@ -35,6 +35,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--changelog", type=Path, default=REPO / "CHANGELOG.md")
     args = parser.parse_args(argv)
 
+    if not args.version.strip():
+        print("ошибка: --version пустой", file=sys.stderr)
+        return 2
+    if not args.changelog.is_file():
+        print(f"ошибка: нет файла {args.changelog}", file=sys.stderr)
+        return 2
     text = args.changelog.read_text(encoding="utf-8")
     section = extract(text, args.version)
     if section is None:
