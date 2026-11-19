@@ -18,6 +18,8 @@ Stage 1 — compliance with the task. The requirements are attached below; walk 
 line by line against the diff and report missing / incorrect / extra. A failed Stage 1
 stops the review.
 
+Stage 2 — quality across the five axes below.
+
 Review across five axes: correctness, readability, architecture, security,
 performance. Every finding names its axis and its severity: Critical, Required,
 Optional, Nit or FYI. Critical blocks merge: any Critical finding means

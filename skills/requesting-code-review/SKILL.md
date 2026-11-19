@@ -61,7 +61,7 @@ characters: `git diff --numstat` gives added/deleted per file.
 
 - ~100 changed lines — good, reviewable in one sitting;
 - ~300 — acceptable only as one logical change;
-- >1000 lines or more than ~20 files — too large, split before review.
+- >1000 changed lines, or 20+ files — too large, split before review.
 
 A file pushed past ~1000 **total** lines is a decomposition signal: extract first, then add. Feature
 work and refactoring go in separate commits. Split **by file group** or **vertical slices**; details —
@@ -202,7 +202,7 @@ pass, no regressions.
 
 - **Empty diff** — check `git status`, tell user nothing to verify
 - **Not a git repo** — skip and tell user
-- **Large diff (>1000 lines or 20+ files)** — split by file, review each separately
+- **Large diff (>1000 changed lines, or 20+ files)** — split by file, review each separately
 - **Reviewer returns non-JSON** — retry once with stricter prompt, then treat as FAIL
 - **False positives** — if reviewer flags something intentional, note it in fix prompt
 - **No test framework found** — skip regression check, but say so in the report: `regression: skipped (no framework)`

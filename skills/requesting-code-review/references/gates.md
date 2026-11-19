@@ -35,7 +35,7 @@ log go go test ./...
 
 ## Linting and type checking (run only if installed)
 
-`log` is defined in the block above — run that block first in the same shell. `run_if` prints the
+`log` is defined in the block above — run that block first in the same shell. `run_if` reports the
 skip instead of staying silent, as the rule below requires.
 
 ```bash
