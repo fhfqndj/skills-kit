@@ -63,7 +63,7 @@ gh api user --jq '"login: \(.login) | email: \(.email // "hidden")"'
 gh api repos/<owner>/<repo>/commits --jq '.[] | "\(.sha[0:7]) | \(.commit.author.email) | author: \(if .author then .author.login else "UNLINKED" end)"'
 ```
 
-A commit whose `author` comes back `null`/UNLINKED was authored with an email the account does not own — fix the per-repo identity before making more commits, or the whole history stays unattributed.
+A commit whose `author` comes back `null`/UNLINKED was authored with an email no GitHub account owns — fix the per-repo identity before making more commits, or the whole history stays unattributed. A non-null `author` is not proof either: compare it with the `login` printed above — `author: <someone else>` is the same failure with a different label.
 
 Listing the account's emails (`gh api user/emails`) needs the `user:email` scope, which is **not** part of the minimal set above: on a least-privilege token that call fails, and attribution must be judged by the commits endpoint, not by the email list.
 
