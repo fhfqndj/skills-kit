@@ -1,7 +1,7 @@
 ---
 name: requesting-code-review
 description: "Use when pre-commit review: security scan, gates, auto-fix."
-version: 2.4.2
+version: 2.4.3
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

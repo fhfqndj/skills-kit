@@ -14,7 +14,7 @@ asked for? Read the original request, not the author's summary, and verify every
 |---|---|---|
 | Missing | A requested feature, state or error path is absent | Walk the requirements line by line against the diff |
 | Incorrect | Present, but behaves differently: wrong default, wrong sort order, wrong status code | Run the scenario, or read the call path that implements it |
-| Extra | Scope creep: unrequested features, speculative abstractions, premature optimization | Compare every added abstraction with the stated requirement |
+| Extra | Scope creep: unrequested features, speculative abstractions, premature optimization — and code that duplicates what the codebase, the standard library or an installed dependency already does | Compare every added abstraction with the stated requirement **and** with what the repository already has — search the project for the helper before accepting a new one |
 
 **Verdict format.** Stage 1 reports PASS or ISSUES with the category of each issue (missing /
 incorrect / extra). Only PASS moves the review to Stage 2 — the five axes, severity and evidence

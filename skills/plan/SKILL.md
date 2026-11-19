@@ -1,7 +1,7 @@
 ---
 name: plan
 description: "Use when writing a markdown plan; do not build."
-version: 2.4.1
+version: 2.5.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -114,7 +114,7 @@ The sizing table, the four split triggers and the bad/good slicing example — `
 ## Plan Document Structure
 
 Every plan starts with the required header — Goal, Spec, Architecture, Tech Stack, Repository,
-Global Constraints — then a `## Tasks` registry (`- [ ] Task N: …`), and every task follows one shape: objective,
+Global Constraints, Non-goals — then a `## Tasks` registry (`- [ ] Task N: …`), and every task follows one shape: objective,
 Interfaces (Consumes / Produces), 2–3 checkable acceptance criteria, files (create/modify/test, exact
 paths), then five steps: failing test → run it (expected FAIL) → minimal implementation → run it
 (expected PASS) → commit. Copy-paste templates — `references/plan-template.md`.
@@ -140,6 +140,13 @@ Read-only: find files by mask (for example `src/**/*.py`) to map the project str
 
 Decide the architecture pattern, file organization, dependencies needed, and testing strategy.
 
+**Run the minimal-solution ladder before choosing the pattern.** Take the first rung that fully
+works: does this need to exist at all → is it already in this codebase → standard library or a
+platform feature → an installed dependency → one line → the minimum that works. Be lazy about the
+solution, never about reading the code or about validation, error handling, security and
+accessibility. What you cut goes into `Non-goals` in the plan header, one line per item, with the
+rung that beat it — cut decisions that stay in someone's head get re-litigated.
+
 ### Step 4: Write Tasks
 
 Order: setup/infrastructure → core functionality (TDD for each) → edge cases → integration → cleanup/documentation. For a feature that spans UI and API, replace this layer-first order with vertical slices — one working end-to-end path per task; see `references/slicing.md`.
@@ -161,7 +168,8 @@ Check:
 - [ ] Each task is bite-sized (2-5 min)
 - [ ] Each task carries 2–3 checkable acceptance criteria; a task is closed only when they pass together with the project's standing bar (the `definition-of-done` reference inside `verification-before-completion`)
 - [ ] Every task has an `Interfaces` line: what it consumes and what it produces for the next task
-- [ ] The header carries Spec, Repository and Global Constraints
+- [ ] The header carries Spec, Repository, Global Constraints and Non-goals
+- [ ] The ladder was run once in Step 3; every cut option in `Non-goals` names its rung
 - [ ] The `## Tasks` section exists (`- [ ] Task N: …`) and matches the `### Task N` sections
 - [ ] File paths are exact
 - [ ] Code examples are complete (copy-pasteable)
