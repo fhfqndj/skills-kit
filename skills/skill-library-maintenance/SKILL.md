@@ -1,7 +1,7 @@
 ---
 name: skill-library-maintenance
-description: "Открывать, когда навыки библиотеки курируются или правятся."
-version: 1.2.0
+description: "Открывать, когда правится библиотека навыков."
+version: 1.2.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

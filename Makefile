@@ -5,6 +5,8 @@ help:
 	@echo "skills-kit: короткие команды"
 	@echo ""
 	@echo "  make check        check.py + lang_check.py"
+	@echo "  make routing-eval routing-эвалы: floor rank-1 100"
+	@echo "  make drift        сверка с локальной библиотекой навыков"
 	@echo "  make test         тесты валидатора, поиска, роутинга, упаковки и установки"
 	@echo "  make hooks        локальный git-хук: git config core.hooksPath .githooks"
 	@echo "  make find Q=…     поиск навыка по фразе"
@@ -40,11 +42,22 @@ test:
 	else \
 		echo "scripts/test_verify_install.py нет — пропущено"; \
 	fi
+	@if [ -f ./scripts/test_check_drift.py ]; then \
+		$(PYTHON) ./scripts/test_check_drift.py; \
+	else \
+		echo "scripts/test_check_drift.py нет — пропущено"; \
+	fi
 	@if [ -f ./scripts/test_packaging.py ]; then \
 		$(PYTHON) ./scripts/test_packaging.py; \
 	else \
 		echo "scripts/test_packaging.py нет — пропущено"; \
 	fi
+
+routing-eval:
+	@$(PYTHON) ./scripts/routing_eval.py --min-rank1 100
+
+drift:
+	@$(PYTHON) ./scripts/check_drift.py $(if $(LIBRARY),--library "$(LIBRARY)")
 
 find:
 	@if [ -z "$(Q)" ]; then echo 'укажи фразу: make find Q="готово, можно коммитить?"'; exit 2; fi
@@ -71,4 +84,4 @@ pack:
 release:
 	@$(PYTHON) ./scripts/pack.py --release
 
-.PHONY: help check test hooks find packs verify install-dry pack release
+.PHONY: help check test routing-eval drift hooks find packs verify install-dry pack release

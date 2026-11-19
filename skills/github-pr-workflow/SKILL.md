@@ -1,13 +1,13 @@
 ---
 name: github-pr-workflow
-description: "Use when running the GitHub PR lifecycle: branch to merge."
-version: 1.2.0
+description: "Use when working a GitHub repo: issues, PR, CI."
+version: 1.3.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   group: git
-  tags: [GitHub, Pull-Requests, CI/CD, Git, Automation, Merge]
+  tags: [GitHub, Pull-Requests, Issues, Releases, CI/CD, Git, Automation, Merge]
   related_skills: [github-auth, github-code-review]
 ---
 
@@ -20,7 +20,8 @@ Complete guide for managing the PR lifecycle. Each section shows the `gh` way fi
 - Opening or shepherding a PR: branch, commits, PR body, review request.
 - Watching CI on a PR and fixing failures until it is green.
 - Merging (squash / merge / rebase), enabling auto-merge, deleting the branch.
-- Not for judging the code (`github-code-review`) or repo settings (`github-repo-management`).
+- Issues, releases, topics, branch protection and Actions secrets — the commands are in the references below.
+- Not for judging the code (`github-code-review`) or for getting access (`github-auth`).
 
 ## Prerequisites
 
@@ -77,14 +78,7 @@ git checkout "$BASE" && git pull origin "$BASE"
 git checkout -b feature/add-user-authentication
 ```
 
-Branch naming conventions:
-- `feature/description` — new features
-- `fix/description` — bug fixes
-- `refactor/description` — code restructuring
-- `docs/description` — documentation
-- `ci/description` — CI/CD changes
-
-Branch names — per the `git-naming` skill (L1): allowed actions, description rules and branch lifetime live there; they are not duplicated here, the list above is only an example.
+Branch names follow the project's naming skill (`git-naming`): allowed actions, description rules and branch lifetime live there, not here. If the project has no such convention, `feature/` and `fix/` are the safe minimum.
 
 ## 2. Making Commits
 
@@ -135,70 +129,18 @@ gh pr create \
 Closes #42"
 ```
 
-Options: `--draft`, `--reviewer user1,user2`, `--label "enhancement"`, `--base develop`
+Options: `--draft`, `--reviewer user1,user2`, `--label "enhancement"`, `--base develop`.
+Body skeletons — `templates/pr-body-feature.md`, `templates/pr-body-bugfix.md`.
 
 The `POST /repos/$OWNER/$REPO/pulls` body (head/base, draft flag) — `references/curl-recipes.md`.
 
 ## 4. Monitoring CI Status
 
-### Check CI Status
-
-**With gh:**
-
-```bash
-# One-shot check
-gh pr checks
-
-# Watch until all checks finish (polls every 10s)
-gh pr checks --watch
-```
-
-The combined-status / check-runs calls and a polling loop for machines without `gh` — `references/curl-recipes.md`.
+`gh pr checks` — one-shot; `gh pr checks --watch` — until all checks finish. The combined-status and check-runs calls plus a polling loop for machines without `gh` — `references/curl-recipes.md`.
 
 ## 5. Auto-Fixing CI Failures
 
-When CI fails, diagnose and fix. This loop works with either auth method.
-
-### Step 1: Get Failure Details
-
-Common failure patterns and how to read them from logs — `references/ci-troubleshooting.md`.
-
-**With gh:**
-
-```bash
-# List recent workflow runs on this branch
-gh run list --branch $(git branch --show-current) --limit 5
-
-# View failed logs
-gh run view <RUN_ID> --log-failed
-```
-
-The `curl` route (list runs, download the log zip into `$WORKDIR`) — `references/curl-recipes.md`.
-
-### Step 2: Fix and Push
-
-After identifying the issue, edit the files in place to fix it:
-
-```bash
-git add <fixed_files>
-git commit -m "fix: resolve CI failure in <check_name>"
-git push
-```
-
-### Step 3: Verify
-
-Re-check CI status using the commands from Section 4 above.
-
-### Auto-Fix Loop Pattern
-
-When asked to auto-fix CI, follow this loop:
-
-1. Check CI status → identify failures
-2. Read failure logs → understand the error
-3. Read the failing code and edit it in place → fix the code
-4. `git add . && git commit -m "fix: ..." && git push`
-5. Wait for CI → re-check status
-6. Repeat if still failing (up to 3 attempts, then ask the user)
+Loop: list runs on the branch (`gh run list --branch $(git branch --show-current)`), read the failure (`gh run view <RUN_ID> --log-failed`), fix in place, commit, push, re-check. Failure patterns per stack and the decision tree — `references/ci-troubleshooting.md`. Three attempts and still red — ask the user instead of pushing a fourth guess.
 
 ## 6. Merging
 
@@ -216,35 +158,18 @@ The REST merge call, branch cleanup and the GraphQL auto-merge mutation — `ref
 
 Merge methods: `"merge"` (merge commit), `"squash"`, `"rebase"`
 
-## 7. Complete Workflow Example
+## Issues, releases, repository settings
 
-```bash
-# 1. Start from a clean base branch
-git checkout "$BASE" && git pull origin "$BASE"
+Issues: `gh issue create --title … --body-file templates/bug-report.md --label …`; list, filter, triage, bulk edits and every `curl` fallback — `references/issues-api.md`. Feature requests — `templates/feature-request.md`.
 
-# 2. Branch
-git checkout -b fix/login-redirect-bug
-
-# 3. (make the code changes)
-
-# 4. Commit
-git add src/auth/login.py tests/test_login.py
-git commit -m "fix: correct redirect URL after login
-
-Preserves the ?next= parameter instead of always redirecting to /dashboard."
-
-# 5. Push
-git push -u origin HEAD
-
-# 6. Create PR (picks gh or curl based on what's available)
-# ... (see Section 3)
-
-# 7. Monitor CI (see Section 4)
-
-# 8. Merge when green (see Section 6)
-```
+Releases, topics, branch protection, Actions secrets and workflows, gists — `references/github-api-cheatsheet.md`. Cloning, forking and repository settings through the API — `references/git-curl-basics.md`, `references/git-curl-advanced.md`. Repos across an organization — `references/org-grouping.md`.
 
 ## Files
 
-- `references/ci-troubleshooting.md` — common CI failure patterns and how to diagnose them from logs.
-- `references/curl-recipes.md` — `curl`/GraphQL equivalents for PR create, CI status and polling, logs, merge, auto-merge, plus the PR command table.
+- `references/ci-troubleshooting.md` — CI failure patterns by stack and the auto-fix decision tree.
+- `references/curl-recipes.md` — `curl`/GraphQL equivalents for PR create, CI status, logs, merge, auto-merge.
+- `references/issues-api.md` — issues and comments: list, search, create, triage, bulk edits.
+- `references/github-api-cheatsheet.md` — releases, topics, branch protection, Actions secrets and workflows.
+- `references/git-curl-basics.md`, `references/git-curl-advanced.md` — clone, fork, settings, org operations.
+- `references/org-grouping.md` — repositories grouped across an organization.
+- `templates/` — PR bodies, bug report, feature request.

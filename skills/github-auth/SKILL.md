@@ -1,14 +1,14 @@
 ---
 name: github-auth
 description: "Открывать, когда настраивается доступ к GitHub."
-version: 1.2.0
+version: 1.2.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
 metadata:
   group: git
   tags: [GitHub, Authentication, Git, gh-cli, SSH, Setup]
-  related_skills: [github-pr-workflow, github-code-review, github-issues, github-repo-management]
+  related_skills: [github-pr-workflow, github-code-review, github-agent-access]
 ---
 
 # Настройка доступа к GitHub
@@ -22,7 +22,7 @@ metadata:
 
 Открывать, когда агенту нужен доступ к GitHub: первый вход на машине, выпуск и хранение токена, SSH-ключ, починка 401/403/404, доступ сервера выката к репозиторию и GHCR.
 
-Не открывать, когда доступ уже настроен, а задача — issues, PR, ревью или сам репозиторий: это `github-issues`, `github-pr-workflow`, `github-code-review`, `github-repo-management`.
+Не открывать, когда доступ уже настроен, а задача — issues, PR, ревью или настройки репозитория: это `github-pr-workflow`, `github-code-review`.
 
 ## С чего начать: проверка
 

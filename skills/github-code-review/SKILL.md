@@ -1,7 +1,7 @@
 ---
 name: github-code-review
 description: "Use when you review PR code: diffs, inline comments."
-version: 1.2.0
+version: 1.2.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -20,7 +20,7 @@ Perform code reviews on local changes before pushing, or review open PRs on GitH
 - Reviewing a local diff before a commit or push.
 - Reviewing an open PR: read the diff, check out the branch, run tests.
 - Leaving inline comments, approving, or requesting changes on a PR.
-- Not for creating the PR itself (`github-pr-workflow`) or repo setup (`github-repo-management`).
+- Not for creating the PR itself, or for issues, releases and repo settings (`github-pr-workflow`).
 
 ## Prerequisites
 

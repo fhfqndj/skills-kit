@@ -28,7 +28,9 @@
 
 ## Запуск
 
-Покрытие: 27 из 27 навыков (`evals/routing/*.json`, по 5+ живых фраз); проверка — `python3 ./scripts/routing_eval.py --min-rank1 90`.
+Покрытие: 25 из 25 навыков (`evals/routing/*.json`, по 5+ живых фраз); фраз — 152,
+из них 8 в `known_miss` (лексический Tier-2 путает соседние навыки). Проверка —
+`make routing-eval` (floor rank-1 100, без учёта `known_miss`).
 
 ```bash
 python3 ./scripts/routing_eval.py              # floor rank-1 90%, top-3, коллизии

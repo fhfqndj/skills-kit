@@ -10,9 +10,9 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 INSTALL = "./scripts/install.sh"
-ALL_SKILLS = 27
+ALL_SKILLS = 25
 CORE_SKILLS = 15
-GIT_SKILLS = 8
+GIT_SKILLS = 6
 CODE_SKILLS = 4
 SENTINEL = "# sentinel: не перезаписывать без --force\n"
 

@@ -14,7 +14,7 @@
     },
     {
       "prompt": "triage the open issues and label them",
-      "owner": "github-issues"
+      "owner": "github-pr-workflow"
     }
   ]
 }

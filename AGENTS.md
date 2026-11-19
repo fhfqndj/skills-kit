@@ -57,7 +57,7 @@ python3 scripts/lang_check.py
 Релиз готов, когда:
 
 - `make check` и `make test` зелёные, `routing_eval --min-rank1 100` проходит;
-- упаковочный тест видит 27 навыков в непосредственных детях `skills/`;
+- упаковочный тест видит 25 навыков в непосредственных детях `skills/`;
 - версия поднята во всех пяти манифестах и совпадает с тегом `v<версия>`;
 - запись в `CHANGELOG.md` добавлена, числа в `README.md`/`INDEX.md` сверены;
 - `python3 scripts/pack.py --release` собирает `dist/skills-kit-<версия>.zip`,

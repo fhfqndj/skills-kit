@@ -1,7 +1,7 @@
 ---
 name: using-skills-kit
-description: "Открывать в начале любой задачи: сначала проверить навыки."
-version: 1.1.0
+description: "Открывать в начале задачи: проверить навыки."
+version: 1.1.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

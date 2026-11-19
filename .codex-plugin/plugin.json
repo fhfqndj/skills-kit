@@ -1,6 +1,6 @@
 {
   "name": "skills-kit",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "A versioned library of engineering skills and subagent roles for AI coding agents: review, testing, delivery, and workflow discipline.",
   "author": {
     "name": "fhfqndj",
@@ -13,7 +13,7 @@
   "interface": {
     "displayName": "skills-kit",
     "shortDescription": "Universal process skills and subagent roles for AI coding agents.",
-    "longDescription": "skills-kit bundles 27 universal process skills and subagent roles for AI coding agents: planning, delegation, git and GitHub workflows, code review, testing, and debugging discipline.",
+    "longDescription": "skills-kit bundles 25 universal process skills and subagent roles for AI coding agents: planning, delegation, git and GitHub workflows, code review, testing, and debugging discipline.",
     "developerName": "fhfqndj",
     "category": "Productivity",
     "capabilities": [
