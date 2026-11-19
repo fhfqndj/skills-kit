@@ -16,12 +16,33 @@ Every plan MUST start with:
 
 **Goal:** [One sentence describing what this builds]
 
+**Spec:** [`SPEC.md`](../SPEC.md) — or «нет: restate согласован в чате»
+
 **Architecture:** [2-3 sentences about approach]
 
 **Tech Stack:** [Key technologies/libraries]
 
+**Global Constraints:** [the project's standing bar — coverage, lint, permissions, size limits;
+link `CONSTRAINTS.md` when the project has one. A constraint with no command is not a constraint.]
+
 ---
 ```
+
+### Task registry
+
+Directly after the header — the only list the executor reads as a to-do queue. One line per task,
+same numbering as the sections below:
+
+```markdown
+## Tasks
+
+- [ ] Task 1: [name]
+- [ ] Task 2: [name]
+- [ ] Task 3: [name]
+```
+
+The executor flips `[ ]` to `[x]` in this file after acceptance; a task without a registry line does
+not exist for it. Keep the registry and the `### Task N` sections in sync.
 
 ### Task Structure
 
@@ -31,6 +52,9 @@ Each task follows this format:
 ### Task N: [Descriptive Name]
 
 **Objective:** What this task accomplishes (one sentence)
+
+**Interfaces:** Consumes: [signatures, files, data this task relies on] · Produces: [what the next
+task may rely on]. Without this line the executor of task 3 does not see task 1's contract.
 
 **Acceptance criteria** (2–3 checkable items, not more):
 - [ ] [Specific, testable condition]
