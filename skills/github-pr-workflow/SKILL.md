@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.1
+version: 1.3.3
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -150,8 +150,12 @@ Loop: list runs on the branch (`gh run list --branch $(git branch --show-current
 # Squash merge + delete branch (cleanest for feature branches)
 gh pr merge --squash --delete-branch
 
-# Enable auto-merge (merges when all checks pass)
-gh pr merge --auto --squash --delete-branch
+# Enable auto-merge (merges when all checks pass). gh cannot delete the branch when
+# enabling auto-merge (some versions reject --auto together with --delete-branch),
+# so remove it separately once the PR is MERGED.
+gh pr merge --auto --squash
+gh pr view --json state -q .state     # wait until it prints MERGED
+git push origin --delete <branch>
 ```
 
 The REST merge call, branch cleanup and the GraphQL auto-merge mutation — `references/curl-recipes.md`.
