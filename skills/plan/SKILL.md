@@ -1,7 +1,7 @@
 ---
 name: plan
 description: "Use when writing a markdown plan; do not build."
-version: 2.4.0
+version: 2.4.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -77,9 +77,9 @@ Before writing a new plan, check for unchecked items in the plans that already e
 
 Openings like "что будем делать?", "сегодня план такой…", "приступать не надо, просто думаю" mean conversational mode, not plan mode either: only reading and reconnaissance, and the reply is analysis — order of work, risks, and the decisions that stay with the user. Starting the work or creating `plans/*.md` is allowed on an explicit request only.
 
-Before answering, rebuild the state from facts, never from memory alone: tail of `workspace/RUNS.md`, `git status --short --branch` for every active repo, the most recent session from past-session history (read its last messages), and `grep '^- \[ \]'` over `plans/*.md` for unchecked items. Only then propose what to do next.
+Before answering, rebuild the state from facts, never from memory alone: the run journal of the workspace (`<workspace>/RUNS.md`), `git status --short --branch` for every active repo, the most recent session from past-session history (read its last messages), and `grep '^- \[ \]'` over `plans/*.md` for unchecked items. Only then propose what to do next.
 
-Lay the options out as a numbered list in the message, not through a blocking question form: on an open "what shall we do" question the form sits waiting for up to an hour and leaves the turn unfinished, while text asks the same and does not block.
+Lay the options out as a numbered list in the message, not through a blocking question form: a form can leave the turn waiting for an answer that never comes, while text asks the same and does not block.
 
 ---
 
