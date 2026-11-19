@@ -13,6 +13,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -27,3 +29,16 @@ jobs:
 
       - name: Routing eval
         run: make routing-eval
+
+      - name: Version bump
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: |
+          if [ -n "$BASE_REF" ]; then
+            base="origin/$BASE_REF"
+          elif git rev-parse --verify -q HEAD^ >/dev/null; then
+            base="HEAD^"
+          else
+            echo "первый коммит — сравнивать не с чем"; exit 0
+          fi
+          python3 ./scripts/check_versions.py --base "$base"

@@ -184,6 +184,7 @@ metadata:
 ```bash
 make check        # check.py + lang_check.py + check_examples.py
 make test         # тесты валидатора, установщика, упаковки и routing-эвалов
+make versions     # изменённый навык обязан поднять version
 make routing-eval # фразы пользователей → нужный навык, floor rank-1 100
 make drift        # сверка с локальной библиотекой: LIBRARY=… или ~/.dsh/skills
 ```
