@@ -1,7 +1,7 @@
 ---
 name: systematic-debugging
 description: "Use when debugging: 4-phase root cause before fixing."
-version: 1.2.2
+version: 1.3.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -195,9 +195,9 @@ pytest tests/test_module.py::test_regression -v   # the regression test
 pytest tests/ -q                                  # full suite, no regressions
 ```
 
-### 4. If the Fix Doesn't Work — Two Attempts, Then Change the Hypothesis
+### 4. If the Fix Doesn't Work — Two Attempts per Hypothesis
 
-**STOP after the second failed fix.** Return to Phase 1 with new information; a third attempt is allowed only with a different hypothesis, not a variation of the same one. **Three or more failed fixes mean the architecture/assumption is wrong (step 5)** — do not start Fix #4 without that discussion.
+**Two attempts per hypothesis, then stop.** If the fix fails a second time, return to Phase 1 with new information; a third attempt is allowed only with a *different* hypothesis, not a variation of the same one. **Three or more failed fixes mean the architecture or the assumption is wrong (step 5)** — do not start a fourth attempt without that discussion.
 
 ### 5. If 3+ Fixes Failed: Question Architecture
 
@@ -217,15 +217,16 @@ If you catch yourself thinking "quick fix for now, investigate later", "just try
 
 Not every bug has a root cause you can fix. The cause may be a third-party service, a platform timer, data you do not own, or a race in someone else's binary. The Iron Law is not a promise that the cause is reachable — it is a promise that you do not patch symptoms without one.
 
-When Phase 1 investigation shows the trigger is external, stop looking for your own defect and do three things:
+This exit opens only when Phase 1 shows **both**: the trigger is external **and** the local handling is correct. An external trigger routinely exposes a local defect — a missing `try`, an unchecked response, a retry storm. Proof before using it: the code receives correct inputs and does what the contract says (call path, logs, a test that pins its behaviour). Without that proof you are not in this section, you are back in Phase 2 with a local suspect.
+
+Once the local side is clean, do three things:
 
 1. **Document what you measured:** which input, environment, version or timing reproduces it, and what you ruled out.
-2. **Contain instead of patch:** a guard, a retry with a bound, a fallback with a warning — and a note that says this is containment, not a fix.
+2. **Contain instead of patch — test-first.** A guard, a bounded retry or a fallback changes behaviour, so it starts with a failing test on the refusal path (TDD), and the note says this is containment, not a fix.
 3. **Hand it over:** an issue with the measurement, a version pin, a monitoring signal that fires when it recurs. Say plainly in the report that the root cause is outside the codebase.
 
-**Do not** loop back to Phase 1 forever, and do not present containment as a fix. A documented external cause is a finished investigation; an unexplained patch is not.
+**Do not** loop back to Phase 1 forever, and do not present containment as a fix. A documented external cause — with the local side proven clean and a regression test on the containment — is a finished investigation; an unexplained patch is not.
 
-**If 3+ fixes failed:** Question the architecture (Phase 4 step 5).
 
 ## Quick Reference
 
