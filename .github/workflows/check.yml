@@ -27,3 +27,8 @@ jobs:
 
       - name: Routing eval
         run: make routing-eval
+
+      - name: Version bump
+        env:
+          BASE_REF: ${{ github.base_ref }}
+        run: python3 ./scripts/check_versions.py --base "origin/${BASE_REF:-master}"
