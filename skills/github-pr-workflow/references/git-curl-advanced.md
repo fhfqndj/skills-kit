@@ -46,7 +46,7 @@ curl -s \
   https://api.github.com/repos/$OWNER/$REPO/actions/secrets/public-key
 
 # Encrypt and set (requires Python with PyNaCl)
-python -c "
+python3 -c "
 from base64 import b64encode
 from nacl import encoding, public
 import json, sys
@@ -74,7 +74,7 @@ curl -s -X PUT \
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO/actions/secrets \
-  | python -c "
+  | python3 -c "
 import sys, json
 for s in json.load(sys.stdin)['secrets']:
     print(f\"  {s['name']:30}  updated: {s['updated_at']}\")"
@@ -102,7 +102,7 @@ curl -s -X POST \
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO/releases \
-  | python -c "
+  | python3 -c "
 import sys, json
 for r in json.load(sys.stdin):
     tag = r.get('tag_name', 'no tag')
@@ -124,7 +124,7 @@ curl -s -X POST \
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO/actions/workflows \
-  | python -c "
+  | python3 -c "
 import sys, json
 for w in json.load(sys.stdin)['workflows']:
     print(f\"  {w['id']:10}  {w['name']:30}  {w['state']}\")"
@@ -133,7 +133,7 @@ for w in json.load(sys.stdin)['workflows']:
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/repos/$OWNER/$REPO/actions/runs?per_page=10" \
-  | python -c "
+  | python3 -c "
 import sys, json
 for r in json.load(sys.stdin)['workflow_runs']:
     print(f\"  Run {r['id']}  {r['name']:30}  {r['conclusion'] or r['status']}\")"
@@ -184,7 +184,7 @@ curl -s -X POST \
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/gists \
-  | python -c "
+  | python3 -c "
 import sys, json
 for g in json.load(sys.stdin):
     files = ', '.join(g['files'].keys())

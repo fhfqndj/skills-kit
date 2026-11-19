@@ -1,7 +1,7 @@
 ---
 name: systematic-debugging
 description: "Use when debugging: 4-phase root cause before fixing."
-version: 1.2.0
+version: 1.2.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -77,7 +77,7 @@ Can you trigger the user's exact symptom with one command? Does it fail for this
 pytest tests/test_module.py::test_name -v
 
 # Or run a scripted repro
-python scripts/repro_bug.py
+python3 scripts/repro_bug.py
 
 # Or run a high-repetition flaky repro
 for i in {1..100}; do pytest tests/test_flake.py::test_name -q || break; done

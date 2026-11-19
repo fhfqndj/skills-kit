@@ -125,7 +125,7 @@ git push origin "$BASE"
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/$OWNER/$REPO \
-  | python -c "
+  | python3 -c "
 import sys, json
 r = json.load(sys.stdin)
 print(f\"Name: {r['full_name']}\")
@@ -138,7 +138,7 @@ print(f\"Language: {r['language']}\")"
 curl -s \
   -H "Authorization: token $GITHUB_TOKEN" \
   "https://api.github.com/user/repos?per_page=20&sort=updated" \
-  | python -c "
+  | python3 -c "
 import sys, json
 for r in json.load(sys.stdin):
     vis = 'private' if r['private'] else 'public'
@@ -147,7 +147,7 @@ for r in json.load(sys.stdin):
 # Search repos
 curl -s \
   "https://api.github.com/search/repositories?q=machine+learning+language:python&sort=stars&per_page=10" \
-  | python -c "
+  | python3 -c "
 import sys, json
 for r in json.load(sys.stdin)['items']:
     print(f\"  {r['full_name']:40}  ★{r['stargazers_count']:6}  {r['description'][:60] if r['description'] else ''}\")"

@@ -37,9 +37,9 @@ while true; do
   case "$POLL" in
     *access_token*)
       # Never echo the token; pipe it straight into gh.
-      # timeout guards the headless-keyring hang (see pitfall below) —
-      # on exit 124, fall back to writing ~/.config/gh/hosts.yml directly.
-      echo "$POLL" | sed 's/.*"access_token":"\([^"]*\)".*/\1/' | timeout 20 gh auth login --with-token \
+      # perl-таймаут стережёт зависание без keyring (см. грабли ниже):
+      # при срабатывании (SIGALRM, код 142) писать ~/.config/gh/hosts.yml напрямую.
+      echo "$POLL" | sed 's/.*"access_token":"\([^"]*\)".*/\1/' | perl -e 'alarm 20; exec @ARGV' gh auth login --with-token \
         || { echo "WITH_TOKEN_HUNG_OR_FAILED — use the hosts.yml fallback below"; exit 1; }
       gh auth setup-git
       gh auth status
@@ -60,13 +60,13 @@ done
 > **ГРАБЛИ (headless Linux): `gh auth login --with-token` может висеть бесконечно.**
 > На машинах без keyring (VPS, контейнеры, нет сессии dbus) хранилище кредов gh
 > может ждать секрет-сервис без конца — даже с `--insecure-storage` и без вывода.
-> Если команда не вернулась примерно за 20 секунд (оборачивать в `timeout 20 …`,
-> чтобы это увидеть), пропускай механизм входа gh и запиши хранилище напрямую:
+> Если команда не вернулась примерно за 20 секунд (оборачивать в переносимый таймаут
+> `perl -e 'alarm 20; exec @ARGV' gh …`, чтобы это увидеть), пропускай механизм входа gh и запиши хранилище напрямую:
 >
 > ```bash
 > # $TOKEN = the access token from the device flow above (never echo it)
 > mkdir -p ~/.config/gh
-> LOGIN=$(curl -s -H "Authorization: token ***" https://api.github.com/user \
+> LOGIN=$(curl -s -H "Authorization: token $TOKEN" https://api.github.com/user \
 >   | sed 's/.*"login": *"\([^"]*\)".*/\1/')
 > printf 'github.com:\n    users:\n        %s:\n            oauth_token: %s\n    git_protocol: https\n    oauth_token: %s\n    user: %s\n' \
 >   "$LOGIN" "$TOKEN" "$TOKEN" "$LOGIN" > ~/.config/gh/hosts.yml

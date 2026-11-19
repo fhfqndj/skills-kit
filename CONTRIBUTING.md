@@ -20,7 +20,7 @@
 ## Перед PR
 
 ```bash
-make check    # check.py + lang_check.py
+make check    # check.py + lang_check.py + check_examples.py
 make test     # валидатор, установщик, упаковка, поиск, routing-эвалы
 python3 scripts/routing_eval.py --min-rank1 100
 ```

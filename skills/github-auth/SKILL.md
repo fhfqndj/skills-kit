@@ -1,7 +1,7 @@
 ---
 name: github-auth
 description: "Открывать, когда настраивается доступ к GitHub."
-version: 1.2.1
+version: 1.2.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -152,7 +152,7 @@ gh auth login
 
 Запасной путь, когда интерактивный вход невозможен (сессия ведётся агентом, браузера нет, headless). Используется публичный client id gh; пользователь вводит код на github.com/login/device. Документированный минимум для `gh auth login --with-token` — scopes `repo,read:org,gist`; `,workflow` добавлять только если надо пушить файлы workflow.
 
-Полный цикл (запрос device code, polling с `slow_down`/`expired_token`, `timeout 20` вокруг `--with-token`) — `references/gh-login.md`.
+Полный цикл (запрос device code, polling с `slow_down`/`expired_token`, переносимый таймаут вокруг `--with-token`) — `references/gh-login.md`.
 
 ### Вход по токену (headless и SSH-серверы)
 
@@ -163,7 +163,7 @@ echo "<THEIR_TOKEN>" | gh auth login --with-token
 gh auth setup-git
 ```
 
-Если `--with-token` зависает и здесь (headless без keyring — известные зависания), оборачивать в `timeout 20` и использовать запасной путь через `hosts.yml` из `references/gh-login.md`.
+Если `--with-token` зависает и здесь (headless без keyring — известные зависания), оборачивать в переносимый таймаут (`perl -e 'alarm 20; exec @ARGV' gh …`) и использовать запасной путь через `hosts.yml` из `references/gh-login.md`.
 
 ### Проверка
 

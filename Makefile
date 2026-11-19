@@ -4,7 +4,7 @@ PYTHON ?= python3
 help:
 	@echo "skills-kit: короткие команды"
 	@echo ""
-	@echo "  make check        check.py + lang_check.py"
+	@echo "  make check        check.py + lang_check.py + check_examples.py"
 	@echo "  make routing-eval routing-эвалы: floor rank-1 100"
 	@echo "  make drift        сверка с локальной библиотекой навыков"
 	@echo "  make test         тесты валидатора, поиска, роутинга, упаковки и установки"
@@ -19,6 +19,7 @@ help:
 check:
 	@./scripts/check.py
 	@./scripts/lang_check.py
+	@./scripts/check_examples.py
 
 test:
 	@$(PYTHON) ./scripts/test_check.py
@@ -41,6 +42,11 @@ test:
 		$(PYTHON) ./scripts/test_verify_install.py; \
 	else \
 		echo "scripts/test_verify_install.py нет — пропущено"; \
+	fi
+	@if [ -f ./scripts/test_check_examples.py ]; then \
+		$(PYTHON) ./scripts/test_check_examples.py; \
+	else \
+		echo "scripts/test_check_examples.py нет — пропущено"; \
 	fi
 	@if [ -f ./scripts/test_check_drift.py ]; then \
 		$(PYTHON) ./scripts/test_check_drift.py; \
