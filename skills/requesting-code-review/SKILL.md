@@ -1,7 +1,7 @@
 ---
 name: requesting-code-review
 description: "Use when pre-commit review: security scan, gates, auto-fix."
-version: 2.4.1
+version: 2.4.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -56,14 +56,17 @@ git diff --cached
 If empty, try `git diff` then `git diff HEAD~1 HEAD`. If `git diff --cached` is empty but `git diff`
 shows changes, tell the user to `git add <files>` first; if still empty, run `git status` — nothing to verify.
 
-A diff over 15,000 characters is split by file: `git diff --name-only`, then
-`git diff HEAD -- specific_file.py`.
+**Change size — measure before dispatching the reviewer.** One threshold, in lines, not
+characters: `git diff --numstat` gives added/deleted per file.
 
-**Change size — check before dispatching the reviewer:** ~100 changed lines is good; ~300 is
-acceptable only as one logical change; >1000 is too large — split before review. A file pushed past
-~1000 **total** lines is a decomposition signal: extract first, then add. Feature work and
-refactoring go in separate commits. Split **by file group** or **vertical slices**; details —
-`references/review-quality.md`.
+- ~100 changed lines — good, reviewable in one sitting;
+- ~300 — acceptable only as one logical change;
+- >1000 changed lines, or 20+ files — too large, split before review.
+
+A file pushed past ~1000 **total** lines is a decomposition signal: extract first, then add. Feature
+work and refactoring go in separate commits. Split **by file group** or **vertical slices**; details —
+`references/review-quality.md`. When a diff is still too big for one pass, review it by file:
+`git diff --name-only`, then `git diff HEAD -- <file>`.
 
 ## Step 2 — Static security scan
 
@@ -117,10 +120,11 @@ skip Steps 5 and 7, apply the Step 4 checklist to the diff yourself, run the tes
 Dispatch the reviewer from the session itself — delegation is not available from inside a script the
 agent runs; one-shot mode and delegation mechanics are host-specific.
 
-The reviewer gets ONLY the diff and static scan results, with no shared context. Fail-closed:
-unparseable response is a fail, and any Critical finding blocks merge. It reviews the five axes,
-names its axis and severity on every finding, returns only the JSON verdict, and needs read-only
-repo access plus permission to run commands (tests, lint) — it must not edit files. Full brief, the
+The reviewer gets the diff, the static scan results and the original task requirements, plus
+read-only access to the repository and permission to run commands (tests, lint) — it must not edit
+files. It reviews Stage 1 (does the diff do what the task asked) and then the five axes, names its
+axis and severity on every finding, and returns only the JSON verdict. Fail-closed: unparseable
+response is a fail, any Critical finding blocks merge. Full brief, the
 fail-closed rules and the JSON shape — `references/reviewer-brief.md`.
 
 ## Verification Story — required for APPROVE
@@ -198,11 +202,11 @@ pass, no regressions.
 
 - **Empty diff** — check `git status`, tell user nothing to verify
 - **Not a git repo** — skip and tell user
-- **Large diff (>15k chars)** — split by file, review each separately
+- **Large diff (>1000 changed lines, or 20+ files)** — split by file, review each separately
 - **Reviewer returns non-JSON** — retry once with stricter prompt, then treat as FAIL
 - **False positives** — if reviewer flags something intentional, note it in fix prompt
-- **No test framework found** — skip regression check, reviewer verdict still runs
-- **Lint tools not installed** — skip that check silently, don't fail
+- **No test framework found** — skip regression check, but say so in the report: `regression: skipped (no framework)`
+- **Lint tools not installed** — skip, state it in the report (`lint: skipped (not installed)`), don't fail silently
 - **Auto-fix introduces new issues** — counts as a new failure, cycle continues
 
 ## Files
