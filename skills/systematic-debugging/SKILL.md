@@ -215,18 +215,10 @@ If you catch yourself thinking "quick fix for now, investigate later", "just try
 
 ## When the Cause Is Outside Your Control
 
-Not every bug has a root cause you can fix. The cause may be a third-party service, a platform timer, data you do not own, or a race in someone else's binary. The Iron Law is not a promise that the cause is reachable — it is a promise that you do not patch symptoms without one.
-
-This exit opens only when Phase 1 shows **both**: the trigger is external **and** the local handling is correct. An external trigger routinely exposes a local defect — a missing `try`, an unchecked response, a retry storm. Proof before using it: the code receives correct inputs and does what the contract says (call path, logs, a test that pins its behaviour). Without that proof you are not in this section, you are back in Phase 2 with a local suspect.
-
-Once the local side is clean, do three things:
-
-1. **Document what you measured:** which input, environment, version or timing reproduces it, and what you ruled out.
-2. **Contain instead of patch — test-first.** A guard, a bounded retry or a fallback changes behaviour, so it starts with a failing test on the refusal path (TDD), and the note says this is containment, not a fix.
-3. **Hand it over:** an issue with the measurement, a version pin, a monitoring signal that fires when it recurs. Say plainly in the report that the root cause is outside the codebase.
-
-**Do not** loop back to Phase 1 forever, and do not present containment as a fix. A documented external cause — with the local side proven clean and a regression test on the containment — is a finished investigation; an unexplained patch is not.
-
+Not every bug has a root cause you can fix. This exit opens only when Phase 1 shows **both**: the
+trigger is external **and** the local handling is correct — an external trigger routinely exposes
+a missing `try`, an unchecked response or a retry storm. Proof, containment by TDD (with a
+regression test) and hand-over — `references/fallbacks.md` § «External cause».
 
 ## Quick Reference
 

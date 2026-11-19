@@ -156,7 +156,11 @@ def build_repo(
         "# skills-kit\n\n## Архитектура\n\n```text\n"
         "skills-kit/\n├── skills/                   навыки плоско\n"
         "└── subagents/                роли\n```\n\n"
-        f"Навыков — **{len(skills)}** в двух группах.\n\n## Как добавить навык\n",
+        f"Навыков — **{len(skills)}** в трёх группах "
+        f"(`core` — {sum(1 for s in skills if s['group'] == 'core')}, "
+        f"`git` — {sum(1 for s in skills if s['group'] == 'git')}, "
+        f"`code` — {sum(1 for s in skills if s['group'] == 'code')}):\n"
+        f"L1 — **{l1}**, L2 — **{l2}**.\n\n## Как добавить навык\n",
     )
 
     listed = roles if role_rows is None else role_rows
@@ -677,6 +681,22 @@ class ReadmeCountTests(RepoTestCase):
     def test_missing_count_is_error(self) -> None:
         write(self.repo / "README.md", "# skills-kit\n")
         self.assertIn("Навыков — **2**", errors_text(self.report()))
+
+    def test_group_breakdown_mismatch_is_error(self) -> None:
+        readme = self.repo / "README.md"
+        write(readme, readme.read_text().replace("(`core` — 1,", "(`core` — 2,"))
+        self.assertIn("разбивка по группам", errors_text(self.report()))
+
+    def test_level_breakdown_mismatch_is_error(self) -> None:
+        readme = self.repo / "README.md"
+        write(readme, readme.read_text().replace("L1 — **1**", "L1 — **0**"))
+        self.assertIn("уровни L1 0/L2 1", errors_text(self.report()))
+
+    def test_missing_breakdowns_are_errors(self) -> None:
+        write(self.repo / "README.md", "Навыков — **2**.\n")
+        text = errors_text(self.report())
+        self.assertIn("нет разбивки по группам", text)
+        self.assertIn("нет разбивки по уровням", text)
 
 
 class IndexFileCountTests(RepoTestCase):
