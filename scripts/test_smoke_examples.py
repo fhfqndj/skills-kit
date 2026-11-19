@@ -42,3 +42,7 @@ class SmokeTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             report = smoke_examples.execute(smoke_examples.CASES, Path(tmp))
         self.assertFalse([line for line in report if line.startswith("FAIL")], report)
+
+
+if __name__ == "__main__":
+    unittest.main(verbosity=2)
