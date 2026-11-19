@@ -1,7 +1,7 @@
 ---
 name: requesting-code-review
 description: "Use when pre-commit review: security scan, gates, auto-fix."
-version: 2.4.1
+version: 2.4.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -56,14 +56,17 @@ git diff --cached
 If empty, try `git diff` then `git diff HEAD~1 HEAD`. If `git diff --cached` is empty but `git diff`
 shows changes, tell the user to `git add <files>` first; if still empty, run `git status` — nothing to verify.
 
-A diff over 15,000 characters is split by file: `git diff --name-only`, then
-`git diff HEAD -- specific_file.py`.
+**Change size — measure before dispatching the reviewer.** One threshold, in lines, not
+characters: `git diff --numstat` gives added/deleted per file.
 
-**Change size — check before dispatching the reviewer:** ~100 changed lines is good; ~300 is
-acceptable only as one logical change; >1000 is too large — split before review. A file pushed past
-~1000 **total** lines is a decomposition signal: extract first, then add. Feature work and
-refactoring go in separate commits. Split **by file group** or **vertical slices**; details —
-`references/review-quality.md`.
+- ~100 changed lines — good, reviewable in one sitting;
+- ~300 — acceptable only as one logical change;
+- >1000 lines or more than ~20 files — too large, split before review.
+
+A file pushed past ~1000 **total** lines is a decomposition signal: extract first, then add. Feature
+work and refactoring go in separate commits. Split **by file group** or **vertical slices**; details —
+`references/review-quality.md`. When a diff is still too big for one pass, review it by file:
+`git diff --name-only`, then `git diff HEAD -- <file>`.
 
 ## Step 2 — Static security scan
 
@@ -198,11 +201,11 @@ pass, no regressions.
 
 - **Empty diff** — check `git status`, tell user nothing to verify
 - **Not a git repo** — skip and tell user
-- **Large diff (>15k chars)** — split by file, review each separately
+- **Large diff (>1000 lines or 20+ files)** — split by file, review each separately
 - **Reviewer returns non-JSON** — retry once with stricter prompt, then treat as FAIL
 - **False positives** — if reviewer flags something intentional, note it in fix prompt
-- **No test framework found** — skip regression check, reviewer verdict still runs
-- **Lint tools not installed** — skip that check silently, don't fail
+- **No test framework found** — skip regression check, but say so in the report: `regression: skipped (no framework)`
+- **Lint tools not installed** — skip, state it in the report (`lint: skipped (not installed)`), don't fail silently
 - **Auto-fix introduces new issues** — counts as a new failure, cycle continues
 
 ## Files

@@ -6,11 +6,17 @@ interactive sessions only.
 
 ## Step 5 — Independent reviewer subagent
 
-Give the reviewer this brief as its goal, with the diff and static scan results attached:
+Give the reviewer this brief as its goal, with the diff, the task requirements and static scan
+results attached. The reviewer also needs read-only access to the repository: Stage 1 compares the
+diff with the original request, and tests or lint cannot be run from a diff alone.
 
 ```text
 You are an independent code reviewer. You have no context about how
 these changes were made. Review the git diff and return ONLY valid JSON.
+
+Stage 1 — compliance with the task. The requirements are attached below; walk them
+line by line against the diff and report missing / incorrect / extra. A failed Stage 1
+stops the review.
 
 Review across five axes: correctness, readability, architecture, security,
 performance. Every finding names its axis and its severity: Critical, Required,
@@ -33,6 +39,10 @@ LOGIC ERRORS (auto-FAIL): wrong conditional logic, missing error handling for
 I/O/network/DB, off-by-one errors, race conditions, code contradicts intent.
 
 SUGGESTIONS (non-blocking): missing tests, style, performance, naming.
+
+<requirements>
+[INSERT THE TASK, PLAN ITEM OR ISSUE BODY]
+</requirements>
 
 <static_scan_results>
 [INSERT ANY FINDINGS FROM STEP 2]
