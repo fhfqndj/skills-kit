@@ -24,9 +24,9 @@ FENCE = re.compile(r"^(?:>\s*)*```(\S*)")
 
 # (шаблон, объяснение) — проверяются только строки внутри shell-блоков
 SHELL_RULES = (
-    (re.compile(r"(?:^|[|;]|&&|\$\()\s*(?:\$\s*)?(?:sudo\s+|env\s+|command\s+)?python\b(?!3)"), "python: на macOS и Ubuntu 22.04 бинарника нет — python3"),
-    (re.compile(r"(?<![\w-])timeout\s+\d+"), "timeout: нет в стоковой macOS — perl -e 'alarm N; exec @ARGV'"),
-    (re.compile(r"sed\s+-i\s+''"), "sed -i '': BSD-синтаксис, на Linux ломается — perl -pi"),
+    (re.compile(r"(?:^|[|;]|&&|\$\()\s*(?:\$\s*)?(?:sudo\s+|env\s+|command\s+|xargs\s+|uv\s+run\s+)?python\b(?!3)"), "python: на macOS и Ubuntu 22.04 бинарника нет — python3"),
+    (re.compile(r"(?:^|[|;]|&&)\s*(?:sudo\s+)?timeout\s+\d+"), "timeout: нет в стоковой macOS — perl -e 'alarm N; exec @ARGV'"),
+    (re.compile(r"sed\s+-i\s*''"), "sed -i '': BSD-синтаксис, на Linux ломается — perl -pi"),
     (re.compile(r"^\s*(?:\$\s*)?(?:sudo\s+)?assert\s"), "assert: не команда оболочки — [ … ] || { …; exit 1; }"),
 )
 
@@ -52,8 +52,12 @@ def shell_lines(text: str):
             lang = match.group(1).lower()
             in_block = (not in_block) and lang in SHELL_LANGS
             continue
-        if in_block:
-            yield number, line
+        if not in_block:
+            continue
+        content = re.sub(r"^(?:>\s*)+", "", line)
+        if content.lstrip().startswith("#"):
+            continue
+        yield number, content
 
 
 def check_file(path: Path, repo: Path) -> list[str]:

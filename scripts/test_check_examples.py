@@ -44,6 +44,10 @@ class ShellRuleTests(unittest.TestCase):
     def test_timeout_is_error(self) -> None:
         self.assertTrue(run_on(SHELL.format("echo x | timeout 20 gh auth login")))
 
+    def test_comment_line_is_ignored(self) -> None:
+        self.assertEqual(run_on(SHELL.format("# timeout 20 is not a command here")), [])
+        self.assertEqual(run_on(SHELL.format('# python -c "print(1)"')), [])
+
     def test_perl_alarm_is_clean(self) -> None:
         self.assertEqual(
             run_on(SHELL.format("echo x | perl -e 'alarm 20; exec @ARGV' gh auth login")), []
@@ -51,6 +55,7 @@ class ShellRuleTests(unittest.TestCase):
 
     def test_bsd_sed_is_error(self) -> None:
         self.assertTrue(run_on(SHELL.format("sed -i '' 's/a/b/g' README.md")))
+        self.assertTrue(run_on(SHELL.format("sed -i'' 's/a/b/g' README.md")))
 
     def test_perl_pi_is_clean(self) -> None:
         self.assertEqual(run_on(SHELL.format("perl -pi -e 's/a/b/g' README.md")), [])
@@ -97,6 +102,7 @@ class FenceTests(unittest.TestCase):
     def test_sudo_and_indented_commands_are_checked(self) -> None:
         self.assertTrue(run_on(SHELL.format("sudo python -m pytest")))
         self.assertTrue(run_on(SHELL.format("  python -m pytest")))
+        self.assertTrue(run_on(SHELL.format("ls | xargs python -c \"print(1)\"")))
 
     def test_second_block_of_file_is_checked(self) -> None:
         text = "```text\nбез команд\n```\n\n```sh\npython -m pytest\n```\n"

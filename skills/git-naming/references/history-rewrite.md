@@ -70,7 +70,7 @@ gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '[.[].author.login] | unique'
 
 ```bash
 # нужен git-filter-repo: brew install git-filter-repo | pipx install git-filter-repo | apt install git-filter-repo
-# .mailmap: «<верное имя> <верный email> <старое имя> <старый email>»
+printf '<верное имя> <верный email> <старое имя> <старый email>\n' > .mailmap
 git filter-repo --force --refs master..HEAD --mailmap .mailmap
 # --refs включает --partial: origin не удаляется, отдельный git remote add не нужен.
 # Без --refs filter-repo удаляет origin — тогда вернуть: git remote add origin <url>
