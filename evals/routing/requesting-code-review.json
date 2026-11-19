@@ -6,12 +6,14 @@
     "run security scan and quality gates before commit",
     "прогони security scan и quality gates перед commit",
     "pre-commit review с auto-fix перед пушем",
-    "вот дифф, код вставлен в чат — security scan перед commit"
+    "вот дифф, код вставлен в чат — security scan перед commit",
+    "проверь дифф перед пушем"
   ],
   "negative": [
     {
       "prompt": "тесты прошли, работа готова?",
       "owner": "verification-before-completion"
     }
-  ]
+  ],
+  "known_miss": "«проверь дифф перед пушем»: \"проверь\" тянет using-skills-kit; свой навык в top-22"
 }

@@ -10,7 +10,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parent.parent
 SKILLS = REPO / "skills"
 INDEX = REPO / "INDEX.md"
-EXPECTED_SKILLS = 27
+EXPECTED_SKILLS = 25
 
 MANIFESTS = (
     "plugin.json",

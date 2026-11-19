@@ -1,7 +1,7 @@
 ---
 name: git-worktrees
-description: "Открывать, когда нужна вторая копия репозитория под ветку."
-version: 1.0.0
+description: "Открывать, когда нужна копия репозитория под ветку."
+version: 1.0.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

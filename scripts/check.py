@@ -792,31 +792,35 @@ def budget_warnings(
     )
 
 
-def reference_orphans(
+AUX_DIRS = ("references", "templates")
+
+
+def aux_orphans(
     repo: Path, skill_dir: Path, text: str, report: Report
 ) -> None:
-    references = skill_dir / "references"
-    if not references.is_dir():
-        return
-    for path in sorted(references.rglob("*.md")):
-        rel_in_skill = path.relative_to(skill_dir).as_posix()
-        parents = {
-            parent.relative_to(skill_dir).as_posix() + "/"
-            for parent in path.parents
-            if parent != skill_dir
-            and parent != references
-            and references in parent.parents
-        }
-        reachable = path.name in text or rel_in_skill in text
-        reachable = reachable or any(parent in text for parent in parents)
-        if reachable:
+    for dirname in AUX_DIRS:
+        root = skill_dir / dirname
+        if not root.is_dir():
             continue
-        rel = path.relative_to(repo).as_posix()
-        if rel.removeprefix("skills/") in REFERENCE_ORPHAN_BASELINE:
-            report.baseline["недостижимых references"] += 1
-            report.baseline_items.append(f"orphan reference: {rel}")
-            continue
-        report.warnings.append(f"{rel}: {rel_in_skill} недостижим из SKILL.md")
+        for path in sorted(root.rglob("*")):
+            if not path.is_file():
+                continue
+            rel_in_skill = path.relative_to(skill_dir).as_posix()
+            parents = {
+                parent.relative_to(skill_dir).as_posix() + "/"
+                for parent in path.parents
+                if parent not in (skill_dir, root) and root in parent.parents
+            }
+            reachable = path.name in text or rel_in_skill in text
+            reachable = reachable or any(parent in text for parent in parents)
+            if reachable:
+                continue
+            rel = path.relative_to(repo).as_posix()
+            if rel.removeprefix("skills/") in REFERENCE_ORPHAN_BASELINE:
+                report.baseline["недостижимых references"] += 1
+                report.baseline_items.append(f"orphan reference: {rel}")
+                continue
+            report.warnings.append(f"{rel}: {rel_in_skill} недостижим из SKILL.md")
 
 
 def run(repo: Path = REPO) -> Report:
@@ -877,7 +881,7 @@ def run(repo: Path = REPO) -> Report:
             elif ref != name:
                 related_map[name].add(ref)
         budget_warnings(rel.as_posix(), name, text, report)
-        reference_orphans(repo, skill_md.parent, text, report)
+        aux_orphans(repo, skill_md.parent, text, report)
         if description:
             if name in TRIGGER_BASELINE:
                 report.baseline["description без триггера"] += 1
@@ -941,6 +945,10 @@ def run(repo: Path = REPO) -> Report:
 
     if not readme.is_file():
         report.errors.append("нет README.md")
+    elif f"Навыков — **{len(skill_names)}**" not in readme.read_text(errors="ignore"):
+        report.errors.append(
+            f"README.md: нет строки «Навыков — **{len(skill_names)}**» — число разъехалось"
+        )
     if not index.is_file():
         report.errors.append("нет INDEX.md")
     else:

@@ -1,7 +1,7 @@
 ---
 name: mcp-search
-description: "Открывать, когда нужен готовый MCP-сервер или подключение."
-version: 1.0.0
+description: "Открывать, когда нужен готовый MCP-сервер."
+version: 1.0.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

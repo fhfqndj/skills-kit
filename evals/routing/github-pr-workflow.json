@@ -5,16 +5,17 @@
     "take this change through a PR: branch, commit, push, CI",
     "the PR CI is red, fix and merge",
     "merge the PR after CI checks pass",
-    "create a PR and wait for CI"
+    "create a PR and wait for CI",
+    "запуши ветку и открой pr"
   ],
   "negative": [
     {
-      "prompt": "review this PR and leave inline comments",
-      "owner": "github-code-review"
+      "prompt": "gh auth login",
+      "owner": "github-auth"
     },
     {
-      "prompt": "create a new GitHub repo",
-      "owner": "github-repo-management"
+      "prompt": "review this PR and leave inline comments",
+      "owner": "github-code-review"
     }
   ]
 }

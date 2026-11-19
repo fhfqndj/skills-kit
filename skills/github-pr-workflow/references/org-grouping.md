@@ -51,3 +51,9 @@ cd "$WORKDIR"
 curl -sL https://raw.githubusercontent.com/github/rest-api-description/main/descriptions/api.github.com/api.github.com.json -o ghapi.json
 python3 -c "import json;d=json.load(open('ghapi.json'));[print(p, list(d['paths'][p])) for p in d['paths'] if 'propert' in p]"
 ```
+
+## Creating a repository in someone else's org
+
+- Creating a repository in the owner's org and pushing the first commit is the owner's action, not a routine step: do it only when the request names the repo in the same turn. A "yes" picked from a choice list is not durable permission.
+- Know your undo before pushing: `gh repo delete` needs the `delete_repo` scope and otherwise answers `HTTP 403 ... needs the "delete_repo" scope`. `gh auth refresh -h github.com -s delete_repo` is interactive, so it cannot be done silently mid-task; without it, deletion is UI-only — say that plainly instead of promising a rollback you cannot perform.
+- Org policy can forbid deploy keys: `gh repo deploy-key add` answers `422 Deploy keys are disabled for this repository`. Read-only is the default (there is no `--allow-read-only` flag, only `-w/--allow-write`); if keys are blocked, plan delivery another way.

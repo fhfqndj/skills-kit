@@ -26,4 +26,4 @@ jobs:
         run: make test
 
       - name: Routing eval
-        run: python3 ./scripts/routing_eval.py --min-rank1 90
+        run: make routing-eval

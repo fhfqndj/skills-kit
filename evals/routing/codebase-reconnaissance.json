@@ -5,7 +5,8 @@
     "help me understand this unfamiliar codebase",
     "recon this unfamiliar repo: entry points and structure",
     "what does this codebase do? walk me through the repo",
-    "onboard me on this codebase before I change anything"
+    "onboard me on this codebase before I change anything",
+    "разберись в этом репозитории"
   ],
   "negative": [
     {
@@ -16,5 +17,6 @@
       "prompt": "find the root cause of this bug",
       "owner": "systematic-debugging"
     }
-  ]
+  ],
+  "known_miss": "«разберись в этом репозитории»: слово \"репозиторий\" принадлежит и git-naming; свой навык в top-5"
 }

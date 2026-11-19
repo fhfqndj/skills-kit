@@ -17,7 +17,8 @@ git clone https://github.com/owner/repo-name.git
 # Clone into a specific directory
 git clone https://github.com/owner/repo-name.git ./my-local-dir
 
-# Shallow clone (faster for large repos)
+# Shallow clone (faster for large repos) — cannot be pushed into an empty repo,
+# see Pitfalls below before reusing it as a source for a new repository
 git clone --depth 1 https://github.com/owner/repo-name.git
 
 # Clone a specific branch
@@ -172,3 +173,10 @@ curl -s -X PUT \
   https://api.github.com/repos/$OWNER/$REPO/topics \
   -d '{"names": ["machine-learning", "python", "automation"]}'
 ```
+
+## Pitfalls
+
+- **A shallow clone cannot be pushed into an empty repo.** The push dies with `remote: fatal: did not receive expected object <sha>` and `remote unpack failed: index-pack failed` — a `--depth 1` pack is incomplete by construction. Fetch full history first (`git fetch --unshallow upstream`), from a remote that actually has it — upstream or the public fork, never the new empty repo — then push.
+- **Verify what landed, not what the command printed.** `private=true`, `fork=false` and a non-zero `size` on the API are the proof; `size: 0` means the push has not finished or was rejected.
+- **Private visibility does not relax the licence.** A private copy of a source-available project is still internal-use only; if the licence is not permissive, delete the public fork afterwards — a public copy is distribution, a private one is internal use.
+

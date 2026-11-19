@@ -5,7 +5,8 @@
     "составь markdown-план и сохрани в plans",
     "нужен план в plans, без реализации",
     "сделай markdown-план в plans перед кодом",
-    "write a plan for this task, no execution"
+    "write a plan for this task, no execution",
+    "распиши по шагам, что делать"
   ],
   "negative": [
     {
@@ -16,5 +17,6 @@
       "prompt": "баг непонятный, найди root cause",
       "owner": "systematic-debugging"
     }
-  ]
+  ],
+  "known_miss": "«распиши по шагам, что делать»: \"что делать\" — словарь brainstorming/agent-context; свой навык в top-17"
 }

@@ -44,9 +44,7 @@
 | [`github-agent-access`](skills/github-agent-access/SKILL.md) | L2 | агенту нужен доступ к GitHub: scoped-токен, границы | 2 |
 | [`github-auth`](skills/github-auth/SKILL.md) | L2 | доступ к GitHub не настроен: токен, SSH, gh login | 7 |
 | [`github-code-review`](skills/github-code-review/SKILL.md) | L2 | ревью чужого PR: диффы, inline-комментарии | 5 |
-| [`github-issues`](skills/github-issues/SKILL.md) | L2 | задачи живут в issues: создание, метки, исполнители | 4 |
-| [`github-pr-workflow`](skills/github-pr-workflow/SKILL.md) | L2 | работа через PR: ветка → коммиты → PR → CI → merge | 5 |
-| [`github-repo-management`](skills/github-repo-management/SKILL.md) | L2 | новый репозиторий или наведение порядка: темы, релизы | 5 |
+| [`github-pr-workflow`](skills/github-pr-workflow/SKILL.md) | L2 | работа через PR, issues и релизы: ветка → PR → CI → merge | 12 |
 
 ## Код и качество — `code`
 
@@ -59,7 +57,7 @@
 | [`systematic-debugging`](skills/systematic-debugging/SKILL.md) | L2 | баг непонятен: воспроизвести → изолировать → причина → фикс | 5 |
 | [`test-driven-development`](skills/test-driven-development/SKILL.md) | L2 | пишется логика: тест раньше кода | 4 |
 
-Всего навыков: **27** — L1: **16**, L2: **11**.
+Всего навыков: **25** — L1: **16**, L2: **9**.
 
 ## Порядок первого дня
 

@@ -155,7 +155,8 @@ def build_repo(
         root / "README.md",
         "# skills-kit\n\n## Архитектура\n\n```text\n"
         "skills-kit/\n├── skills/                   навыки плоско\n"
-        "└── subagents/                роли\n```\n\n## Как добавить навык\n",
+        "└── subagents/                роли\n```\n\n"
+        f"Навыков — **{len(skills)}** в двух группах.\n\n## Как добавить навык\n",
     )
 
     listed = roles if role_rows is None else role_rows
@@ -448,6 +449,19 @@ class DescriptionTests(RepoTestCase):
         )
         self.assertNotIn("недостижим", warnings_text(self.report()))
 
+    def test_orphan_template_warning(self) -> None:
+        write(self.repo / "skills/alpha/templates/unused.md", "# Не используется\n")
+        self.assertIn("templates/unused.md недостижим", warnings_text(self.report()))
+
+    def test_linked_template_is_not_orphan(self) -> None:
+        write(self.repo / "skills/alpha/templates/used.md", "# Заготовка\n")
+        rewrite_skill(
+            self.repo,
+            "alpha",
+            skill_text("alpha", body="- `templates/used.md` — заготовка.\n"),
+        )
+        self.assertNotIn("недостижим", warnings_text(self.report()))
+
     def test_reference_directory_link_covers_nested_files(self) -> None:
         write(self.repo / "skills/alpha/references/sub/one.md", "# Один\n")
         rewrite_skill(
@@ -649,6 +663,20 @@ class ParityTests(RepoTestCase):
     def test_role_table_phantom_row(self) -> None:
         build_repo(self.repo, role_rows=["helper", "ghost"])
         self.assertIn("строка про ghost.md", errors_text(self.report()))
+
+
+class ReadmeCountTests(RepoTestCase):
+    def test_matching_count_is_green(self) -> None:
+        self.assertEqual(self.report().errors, [])
+
+    def test_stale_count_is_error(self) -> None:
+        readme = self.repo / "README.md"
+        write(readme, readme.read_text().replace("**2**", "**3**"))
+        self.assertIn("Навыков — **2**", errors_text(self.report()))
+
+    def test_missing_count_is_error(self) -> None:
+        write(self.repo / "README.md", "# skills-kit\n")
+        self.assertIn("Навыков — **2**", errors_text(self.report()))
 
 
 class IndexFileCountTests(RepoTestCase):
