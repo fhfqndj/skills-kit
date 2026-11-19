@@ -41,6 +41,11 @@ CASES = (
 
 
 def tool_available(case: Case) -> bool:
+    if case.tool == "git-filter-repo":
+        return (
+            subprocess.run(["git", "filter-repo", "--help"], capture_output=True, check=False).returncode
+            == 0
+        )
     return shutil.which(case.tool) is not None if case.tool else True
 
 
@@ -55,7 +60,16 @@ def execute(cases: tuple[Case, ...] | list[Case], workdir: Path) -> list[str]:
         if not tool_available(case):
             report.append(f"skipped {case.name} ({case.tool} not installed)")
             continue
-        result = subprocess.run(case.command, cwd=workdir, capture_output=True, text=True)
+        try:
+            result = subprocess.run(
+                case.command, cwd=workdir, capture_output=True, text=True, timeout=60
+            )
+        except subprocess.TimeoutExpired:
+            report.append(f"FAIL {case.name}: timeout after 60s")
+            continue
+        except FileNotFoundError as error:
+            report.append(f"FAIL {case.name}: {error.strerror}: {case.command[0]}")
+            continue
         actual = normalize(result.returncode)
         if actual != case.expected:
             detail = (result.stderr or result.stdout).strip().splitlines()[:2]
@@ -75,7 +89,11 @@ def main() -> int:
         print(line)
     failed = [line for line in report if line.startswith("FAIL")]
     skipped = [line for line in report if line.startswith("skipped")]
-    print(f"смоук: {len(report)}, провалов: {len(failed)}, пропусков: {len(skipped)}")
+    executed = len(report) - len(skipped)
+    print(f"смоук: {len(report)}, выполнено: {executed}, провалов: {len(failed)}, пропусков: {len(skipped)}")
+    if executed < 3:
+        print("ошибка: выполнено меньше трёх сниппетов — смоук ничего не проверил")
+        return 1
     return 1 if failed else 0
 
 
