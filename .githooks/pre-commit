@@ -9,6 +9,13 @@ if [ -z "$root" ]; then
 fi
 cd "$root"
 
+if [ -f ./scripts/check_examples.py ]; then
+  if ! ./scripts/check_examples.py; then
+    echo "pre-commit: check_examples.py упал — команда в примере не запускается."
+    exit 1
+  fi
+fi
+
 if [ -f ./scripts/check.py ]; then
   if ! ./scripts/check.py; then
     echo

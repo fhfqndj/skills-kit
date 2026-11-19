@@ -4,7 +4,7 @@ PYTHON ?= python3
 help:
 	@echo "skills-kit: короткие команды"
 	@echo ""
-	@echo "  make check        check.py + lang_check.py"
+	@echo "  make check        check.py + lang_check.py + check_examples.py"
 	@echo "  make routing-eval routing-эвалы: floor rank-1 100"
 	@echo "  make drift        сверка с локальной библиотекой навыков"
 	@echo "  make test         тесты валидатора, поиска, роутинга, упаковки и установки"

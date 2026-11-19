@@ -43,6 +43,7 @@
 ```bash
 python3 scripts/check.py
 python3 scripts/lang_check.py
+python3 scripts/check_examples.py
 ```
 
 Ноль ошибок. Предупреждения о привязке к рантайму — повод переписать, а не

@@ -73,11 +73,34 @@ class GlobalRuleTests(unittest.TestCase):
             run_on(SHELL.format('curl -H "Authorization: token $TOKEN" https://api.github.com')), []
         )
 
-    def test_filter_branch_is_error(self) -> None:
-        self.assertTrue(run_on("Использовать `git filter-branch` не стоит."))
+    def test_filter_branch_in_shell_is_error(self) -> None:
+        self.assertTrue(run_on(SHELL.format("git filter-branch -f --env-filter 'true' HEAD~1..HEAD")))
 
     def test_filter_repo_is_clean(self) -> None:
-        self.assertEqual(run_on("Использовать `git filter-repo --mailmap`."), [])
+        self.assertEqual(run_on(SHELL.format("git filter-repo --force --mailmap .mailmap")), [])
+
+    def test_prose_warning_is_not_error(self) -> None:
+        self.assertEqual(run_on("Не используйте `git filter-branch`, Git рекомендует filter-repo.\n"), [])
+        self.assertEqual(run_on("Никогда не подставляйте `token ***` в пример.\n"), [])
+
+
+class FenceTests(unittest.TestCase):
+    def test_blockquote_fence_is_checked(self) -> None:
+        self.assertTrue(run_on("> ```bash\n> timeout 20 gh auth login\n> ```\n"))
+
+    def test_info_string_fence_is_checked(self) -> None:
+        self.assertTrue(run_on('```bash title="demo"\npython -m pytest\n```\n'))
+
+    def test_console_dollar_prompt_is_checked(self) -> None:
+        self.assertTrue(run_on("```console\n$ python -m pytest\n```\n"))
+
+    def test_sudo_and_indented_commands_are_checked(self) -> None:
+        self.assertTrue(run_on(SHELL.format("sudo python -m pytest")))
+        self.assertTrue(run_on(SHELL.format("  python -m pytest")))
+
+    def test_second_block_of_file_is_checked(self) -> None:
+        text = "```text\nбез команд\n```\n\n```sh\npython -m pytest\n```\n"
+        self.assertTrue(run_on(text))
 
 
 class ScopeTests(unittest.TestCase):

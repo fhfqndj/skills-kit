@@ -20,17 +20,17 @@ from pathlib import Path
 
 REPO = Path(__file__).resolve().parent.parent
 SHELL_LANGS = {"bash", "sh", "shell", "console", "zsh"}
-FENCE = re.compile(r"^```(\w*)\s*$")
+FENCE = re.compile(r"^(?:>\s*)*```(\S*)")
 
 # (шаблон, объяснение) — проверяются только строки внутри shell-блоков
 SHELL_RULES = (
-    (re.compile(r"(?:^|\|\s*|\$\(\s*|&&\s*|;\s*)python\b(?!3)"), "python: на macOS и Ubuntu 22.04 бинарника нет — python3"),
+    (re.compile(r"(?:^|[|;]|&&|\$\()\s*(?:\$\s*)?(?:sudo\s+|env\s+|command\s+)?python\b(?!3)"), "python: на macOS и Ubuntu 22.04 бинарника нет — python3"),
     (re.compile(r"(?<![\w-])timeout\s+\d+"), "timeout: нет в стоковой macOS — perl -e 'alarm N; exec @ARGV'"),
     (re.compile(r"sed\s+-i\s+''"), "sed -i '': BSD-синтаксис, на Linux ломается — perl -pi"),
-    (re.compile(r"^\s*assert\s"), "assert: не команда оболочки — [ … ] || { …; exit 1; }"),
+    (re.compile(r"^\s*(?:\$\s*)?(?:sudo\s+)?assert\s"), "assert: не команда оболочки — [ … ] || { …; exit 1; }"),
 )
 
-# (шаблон, объяснение) — проверяются во всём тексте, включая прозу
+# (шаблон, объяснение) — только внутри shell-блоков: в прозе это предупреждения, а не команды
 GLOBAL_RULES = (
     (re.compile(r"\btoken\s+\*\*\*"), "плейсхолдер *** вместо переменной: пример молча пишет пустой токен"),
     (re.compile(r"\bfilter-branch\b"), "filter-branch: Git рекомендует filter-repo"),
@@ -64,7 +64,7 @@ def check_file(path: Path, repo: Path) -> list[str]:
         for pattern, reason in SHELL_RULES:
             if pattern.search(line):
                 found.append(f"{rel}:{number}: {reason}")
-    for number, line in enumerate(text.splitlines(), start=1):
+    for number, line in shell_lines(text):
         for pattern, reason in GLOBAL_RULES:
             if pattern.search(line):
                 found.append(f"{rel}:{number}: {reason}")

@@ -69,9 +69,11 @@ gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '[.[].author.login] | unique'
 Если автор не тот — переписать только свою ветку и сверить дерево до/после:
 
 ```bash
+# нужен git-filter-repo: brew install git-filter-repo | pipx install git-filter-repo | apt install git-filter-repo
 # .mailmap: «<верное имя> <верный email> <старое имя> <старый email>»
 git filter-repo --force --refs master..HEAD --mailmap .mailmap
-# filter-repo снимает remote origin — вернуть: git remote add origin <url>
+# --refs включает --partial: origin не удаляется, отдельный git remote add не нужен.
+# Без --refs filter-repo удаляет origin — тогда вернуть: git remote add origin <url>
 git rev-parse HEAD^{tree}     # до и после — одинаковый
 git push --force-with-lease   # force — только после явной просьбы владельца
 ```
