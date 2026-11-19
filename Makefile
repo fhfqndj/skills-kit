@@ -8,6 +8,7 @@ help:
 	@echo "  make routing-eval routing-эвалы: floor rank-1 100"
 	@echo "  make drift        сверка с локальной библиотекой навыков"
 	@echo "  make versions     изменённый навык обязан поднять version"
+	@echo "  make smoke        реальный прогон переносимых примеров"
 	@echo "  make test         тесты валидатора, поиска, роутинга, упаковки и установки"
 	@echo "  make hooks        локальный git-хук: git config core.hooksPath .githooks"
 	@echo "  make find Q=…     поиск навыка по фразе"
@@ -49,15 +50,20 @@ test:
 	else \
 		echo "scripts/test_release_notes.py нет — пропущено"; \
 	fi
-	@if [ -f ./scripts/test_check_examples.py ]; then \
-		$(PYTHON) ./scripts/test_check_examples.py; \
-	else \
-		echo "scripts/test_check_examples.py нет — пропущено"; \
-	fi
 	@if [ -f ./scripts/test_check_versions.py ]; then \
 		$(PYTHON) ./scripts/test_check_versions.py; \
 	else \
 		echo "scripts/test_check_versions.py нет — пропущено"; \
+	fi
+	@if [ -f ./scripts/test_smoke_examples.py ]; then \
+		$(PYTHON) ./scripts/test_smoke_examples.py; \
+	else \
+		echo "scripts/test_smoke_examples.py нет — пропущено"; \
+	fi
+	@if [ -f ./scripts/test_check_examples.py ]; then \
+		$(PYTHON) ./scripts/test_check_examples.py; \
+	else \
+		echo "scripts/test_check_examples.py нет — пропущено"; \
 	fi
 	@if [ -f ./scripts/test_check_drift.py ]; then \
 		$(PYTHON) ./scripts/test_check_drift.py; \
@@ -78,6 +84,8 @@ drift:
 
 versions:
 	@$(PYTHON) ./scripts/check_versions.py --base $(or $(BASE),origin/master)
+smoke:
+	@$(PYTHON) ./scripts/smoke_examples.py
 
 find:
 	@if [ -z "$(Q)" ]; then echo 'укажи фразу: make find Q="готово, можно коммитить?"'; exit 2; fi
@@ -104,4 +112,4 @@ pack:
 release:
 	@$(PYTHON) ./scripts/pack.py --release
 
-.PHONY: help check test routing-eval drift versions hooks find packs verify install-dry pack release
+.PHONY: help check test routing-eval drift versions smoke hooks find packs verify install-dry pack release
