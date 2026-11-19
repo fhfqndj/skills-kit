@@ -42,11 +42,11 @@ SRC=<старое-дерево>; DST=<projects>/<новое-имя>
 mkdir -p "$DST"
 rsync -a --exclude '.git' --exclude 'node_modules' --exclude 'dist' "$SRC/" "$DST/"
 cd "$DST"
-sed -i '' 's/<старое-имя>/<новое-имя>/g' package.json docker-compose.yml README.md
+perl -pi -e 's/<старое-имя>/<новое-имя>/g' package.json docker-compose.yml README.md
 printf '\n# Local env\n.env\n.env.*\n!.env.example\n' >> .gitignore
 ```
 
-После `git clone` в новом репозитории остался бы старый remote и вся прежняя история. Самоупоминания ищутся по всему проекту (`grep -rn "<старое-имя>"`), а `sed` правит `package.json`, `docker-compose.yml` (`image`, `container_name`) и README: иначе имя пакета, образ и контейнер остаются старыми при новом имени репозитория.
+После `git clone` в новом репозитории остался бы старый remote и вся прежняя история. Самоупоминания ищутся по всему проекту (`grep -rn "<старое-имя>"`), а эта замена правит `package.json`, `docker-compose.yml` (`image`, `container_name`) и README: иначе имя пакета, образ и контейнер остаются старыми при новом имени репозитория.
 
 ## 3. Проверки до коммита
 

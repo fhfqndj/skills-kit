@@ -1,7 +1,7 @@
 ---
 name: git-naming
 description: "Открывать, когда называются коммиты, ветки и репозитории."
-version: 1.1.0
+version: 1.1.1
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -31,7 +31,7 @@ metadata:
 - **Автора коммита на GitHub определяет email, а не имя:** `-c user.name=<аккаунт> -c user.email=<чужой email>` даёт коммит от чужого аккаунта, а `git log --format='%an'` показывает нужное имя и врёт. Сверять по API: `gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '[.[].author.login] | unique'`.
 - **Каждый коммит проверять отдельно, а не только HEAD:** worktree или цикл по месту; один упавший коммит ломает `bisect`.
 
-Разъехавшиеся коммиты, деление файла по хункам, проверка каждого коммита, `filter-branch` и схлопывание через `commit-tree` — `references/history-rewrite.md`.
+Разъехавшиеся коммиты, деление файла по хункам, проверка каждого коммита, `filter-repo` и схлопывание через `commit-tree` — `references/history-rewrite.md`.
 
 ## Безопасность дерева и истории
 

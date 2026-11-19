@@ -9,7 +9,7 @@
 export GITHUB_TOKEN="<token>"
 
 # Then use in curl calls:
-curl -s -H "Authorization: token ***" \
+curl -s -H "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/user
 ```
 

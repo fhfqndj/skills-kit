@@ -1,7 +1,7 @@
 ---
 name: github-code-review
 description: "Use when you review PR code: diffs, inline comments."
-version: 1.2.1
+version: 1.2.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]

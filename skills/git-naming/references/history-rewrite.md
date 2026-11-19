@@ -69,7 +69,9 @@ gh api repos/<owner>/<repo>/pulls/<n>/commits --jq '[.[].author.login] | unique'
 Если автор не тот — переписать только свою ветку и сверить дерево до/после:
 
 ```bash
-git filter-branch -f --env-filter 'export GIT_AUTHOR_EMAIL=<верный>; export GIT_COMMITTER_EMAIL=<верный>; export GIT_AUTHOR_NAME=<логин>; export GIT_COMMITTER_NAME=<логин>' master..HEAD
+# .mailmap: «<верное имя> <верный email> <старое имя> <старый email>»
+git filter-repo --force --refs master..HEAD --mailmap .mailmap
+# filter-repo снимает remote origin — вернуть: git remote add origin <url>
 git rev-parse HEAD^{tree}     # до и после — одинаковый
 git push --force-with-lease   # force — только после явной просьбы владельца
 ```
@@ -85,7 +87,7 @@ git commit-tree <tree> -p <parent> -m "<msg>"
 Так промежуточные снапшоты остаются теми же, что были в истории, а не пересобранными заново. Перед `git reset --hard <новый HEAD>` обязательно:
 
 ```bash
-assert "$(git rev-parse HEAD^{tree})" = "$(git rev-parse <new>^{tree})"
+[ "$(git rev-parse HEAD^{tree})" = "$(git rev-parse <new>^{tree})" ] || { echo "деревья не совпали — откат"; exit 1; }
 ```
 
 Соседние по времени коммиты одной темы (фича + её правки через один шаг) склеивать можно, только если они идут подряд — иначе нужного дерева просто не существует.

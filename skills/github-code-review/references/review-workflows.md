@@ -75,7 +75,7 @@ For each changed file, read it in full to see context around the changes — dif
 
 ```bash
 # Run tests if there's a test suite
-python -m pytest 2>&1 | tail -20
+python3 -m pytest 2>&1 | tail -20
 # or: npm test, cargo test, go test ./..., etc.
 
 # Run linter if configured

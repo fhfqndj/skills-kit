@@ -19,6 +19,7 @@ help:
 check:
 	@./scripts/check.py
 	@./scripts/lang_check.py
+	@./scripts/check_examples.py
 
 test:
 	@$(PYTHON) ./scripts/test_check.py
@@ -41,6 +42,11 @@ test:
 		$(PYTHON) ./scripts/test_verify_install.py; \
 	else \
 		echo "scripts/test_verify_install.py нет — пропущено"; \
+	fi
+	@if [ -f ./scripts/test_check_examples.py ]; then \
+		$(PYTHON) ./scripts/test_check_examples.py; \
+	else \
+		echo "scripts/test_check_examples.py нет — пропущено"; \
 	fi
 	@if [ -f ./scripts/test_check_drift.py ]; then \
 		$(PYTHON) ./scripts/test_check_drift.py; \
