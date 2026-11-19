@@ -50,9 +50,13 @@ TEST_FILE = re.compile(
     r"(^|/)(tests?|__tests__|specs?|e2e)/|(^|/)test_[^/]*\.py$"
     r"|(_test|\.test|\.spec|_spec)\.[A-Za-z0-9]+$"
 )
-SHORTCUT = re.compile(r"shortcut:\s*(?P<body>.+?)\s*$", re.I)
-SHORTCUT_ID = re.compile(r"\[(?P<id>D\d+)\]\s*$", re.I)
-SHORTCUT_PLACEHOLDER = re.compile(r"\b(потом|later|todo|fixme|никогда|never|позже)\b", re.I)
+SHORTCUT = re.compile(
+    r"(?:^|[\s(])(?://+|#+|/\*+|\*)\s*shortcut:\s*(?P<body>.+?)\s*$", re.I
+)
+SHORTCUT_ID = re.compile(r"\[(?P<id>D\d+)\]", re.I)
+SHORTCUT_PLACEHOLDER = re.compile(
+    r"^(потом|позже|later|todo|fixme|никогда|never)\.?$", re.I
+)
 DIFF_FILE = re.compile(r"^diff --git a/(.+?) b/(.+)$")
 HUNK = re.compile(r"^@@ -(\d+)(?:,\d+)? \+(\d+)(?:,\d+)? @@")
 SEPARATOR = re.compile(r":?-{2,}:?")
@@ -337,7 +341,12 @@ def compare_bars(old: Bar, new: Bar) -> list[str]:
     return findings
 
 
-def shortcut_problem(text: str, exceptions: dict[str, list[str]]) -> str | None:
+def shortcut_problem(
+    text: str,
+    exceptions: dict[str, list[str]],
+    header: list[str] | None = None,
+    path: str | None = None,
+) -> str | None:
     """Форма маркера осознанного упрощения: предел, условие возврата и ID в исключениях."""
     match = SHORTCUT.search(text)
     if match is None:
@@ -359,6 +368,14 @@ def shortcut_problem(text: str, exceptions: dict[str, list[str]]) -> str | None:
         return "shortcut без [Dn]: добавь строку в таблицу исключений и сошлись на неё"
     if ident not in exceptions:
         return f"shortcut ссылается на {ident}, которого нет в таблице исключений"
+    if path is not None and header:
+        row = exceptions[ident]
+        declared = cell(row, column(header, "путь")).strip("`* ")
+        if declared and declared != path:
+            return (
+                f"shortcut ссылается на {ident} для «{declared}», а стоит в «{path}» — "
+                f"исключение одного места не легализует другое"
+            )
     return None
 
 
@@ -368,7 +385,9 @@ def scan_diff(diff: Diff, bar: Bar | None = None) -> list[str]:
     for line in diff.added:
         if line.path.endswith(DOC_SUFFIXES):
             continue
-        problem = shortcut_problem(line.text, exceptions)
+        problem = shortcut_problem(
+            line.text, exceptions, bar.exceptions_header if bar else None, line.path
+        )
         if problem is not None:
             findings.append(f"{line.path}:{line.number}: {problem}")
             continue
@@ -394,6 +413,17 @@ def scan_diff(diff: Diff, bar: Bar | None = None) -> list[str]:
         if TEST_FILE.search(path):
             findings.append(f"{path}: удалён тест — причина в сообщении коммита")
     return findings
+
+
+def shortcut_ids(diff: Diff) -> set[str]:
+    ids: set[str] = set()
+    for line in diff.added:
+        if line.path.endswith(DOC_SUFFIXES) or SHORTCUT.search(line.text) is None:
+            continue
+        match = SHORTCUT_ID.search(line.text)
+        if match is not None:
+            ids.add(match.group("id").upper())
+    return ids
 
 
 def read_head_file(top: Path, path: Path) -> str | None:
@@ -431,9 +461,19 @@ def run(root: Path, staged: bool, constraints: Path) -> int:
     if raw is None:
         print("гард планки: git diff не выполнился (код 2)")
         return 2
-    findings.extend(scan_diff(parse_diff(raw), bar))
+    diff = parse_diff(raw)
+    findings.extend(scan_diff(diff, bar))
     if not staged:
+        diff = Diff(added=diff.added + untracked_lines(top))
         findings.extend(scan_diff(Diff(added=untracked_lines(top)), bar))
+    justified = shortcut_ids(diff)
+    findings = [
+        finding
+        for finding in findings
+        if not any(
+            f"новое исключение «{ident}»" in finding for ident in justified
+        )
+    ]
     mode = "проиндексированное" if staged else "рабочее дерево"
     print(f"гард планки: {CONSTRAINTS}, режим: {mode}")
     for finding in findings:
@@ -469,7 +509,7 @@ CLEAN_CONSTRAINTS = """# Ограничения проекта
 
 | ID | Правило | Путь | Причина | Владелец | Истекает / условие возврата |
 |---|---|---|---|---|---|
-| D1 | один воркер | `src/queue.ts` | второй воркер требует очереди | team | при втором воркере |
+| D1 | один воркер | `src/app.ts` | второй воркер требует очереди | team | при втором воркере |
 
 ## Как гонять
 
@@ -517,6 +557,26 @@ def mutate_shortcut_ok(repo: Path) -> None:
         path.read_text(encoding="utf-8") + "// shortcut: один воркер, при втором воркере — очередь [D1]\n",
         encoding="utf-8",
     )
+
+
+def mutate_shortcut_no_id(repo: Path) -> None:
+    path = repo / "src" / "app.ts"
+    path.write_text(path.read_text(encoding="utf-8") + "// shortcut: один воркер, при втором\n", encoding="utf-8")
+
+
+def mutate_shortcut_unknown_id(repo: Path) -> None:
+    path = repo / "src" / "app.ts"
+    path.write_text(path.read_text(encoding="utf-8") + "// shortcut: один воркер, при втором [D9]\n", encoding="utf-8")
+
+
+def mutate_shortcut_empty_half(repo: Path) -> None:
+    path = repo / "src" / "app.ts"
+    path.write_text(path.read_text(encoding="utf-8") + "// shortcut: один воркер, [D1]\n", encoding="utf-8")
+
+
+def mutate_shortcut_wrong_path(repo: Path) -> None:
+    path = repo / "src" / "other.ts"
+    path.write_text("// shortcut: один воркер, при втором [D1]\n", encoding="utf-8")
 
 
 def mutate_stub(repo: Path) -> None:
@@ -602,6 +662,10 @@ def self_test() -> int:
             ("число без команды", mutate_no_command, 1),
             ("shortcut без запятой", mutate_shortcut_no_comma, 1),
             ("shortcut с заглушкой", mutate_shortcut_placeholder, 1),
+            ("shortcut без ID", mutate_shortcut_no_id, 1),
+            ("shortcut с чужим ID", mutate_shortcut_unknown_id, 1),
+            ("shortcut с пустой половиной", mutate_shortcut_empty_half, 1),
+            ("shortcut не в том файле", mutate_shortcut_wrong_path, 1),
             ("shortcut корректный", mutate_shortcut_ok, 0),
             ("нет CONSTRAINTS.md", mutate_missing_file, 2),
             ("чистый контроль после правок", mutate_clean, 0),

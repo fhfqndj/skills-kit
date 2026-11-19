@@ -177,9 +177,9 @@ works; a rung that only partly works is not a rung.
 Lazy about the solution, not about the change: read the code the change touches, and never cut
 validation, error handling, security, accessibility or a test for non-trivial logic.
 
-Example — «экспорт CSV»: not a new package with its own writer (rung 4 beaten by rung 3), not a
-`pyexcel` dependency for ten columns; `csv` from the standard library over the existing
-`iter_users()` — six lines, one test.
+Example — a CSV export: not a new package with its own writer (rung 4 beaten by rung 3), not a
+dependency for ten columns; `csv` from the standard library over the existing `iter_users()` —
+six lines, one test.
 
 Every cut option goes to `Non-goals` in the header with the rung that beat it.
 

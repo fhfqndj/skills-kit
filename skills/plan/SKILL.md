@@ -1,7 +1,7 @@
 ---
 name: plan
 description: "Use when writing a markdown plan; do not build."
-version: 2.4.2
+version: 2.5.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
