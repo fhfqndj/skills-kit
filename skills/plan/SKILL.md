@@ -1,7 +1,7 @@
 ---
 name: plan
 description: "Use when writing a markdown plan; do not build."
-version: 2.3.0
+version: 2.4.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -113,7 +113,16 @@ The sizing table, the four split triggers and the bad/good slicing example — `
 
 ## Plan Document Structure
 
-Every plan starts with the required header — Goal, Architecture, Tech Stack — and every task follows one shape: objective, 2–3 checkable acceptance criteria, files (create/modify/test, exact paths), then five steps: failing test → run it (expected FAIL) → minimal implementation → run it (expected PASS) → commit. Copy-paste templates — `references/plan-template.md`.
+Every plan starts with the required header — Goal, Spec, Architecture, Tech Stack, Repository,
+Global Constraints — then a `## Tasks` registry (`- [ ] Task N: …`), and every task follows one shape: objective,
+Interfaces (Consumes / Produces), 2–3 checkable acceptance criteria, files (create/modify/test, exact
+paths), then five steps: failing test → run it (expected FAIL) → minimal implementation → run it
+(expected PASS) → commit. Copy-paste templates — `references/plan-template.md`.
+
+The registry is the executor's queue: `subagent-driven-development` reads `- [ ] Task N` lines from
+the `## Tasks` section of this file. When a plan has no registry, create that section from its
+`### Task N` headings before execution; completion status is never inferred from headings — only
+acceptance flips a box.
 
 When a criterion has more than one condition, write it as a Given/When/Then scenario — the format is in `brainstorming/references/spec-template.md` §7.
 
@@ -151,6 +160,9 @@ Check:
 - [ ] Tasks are sequential and logical
 - [ ] Each task is bite-sized (2-5 min)
 - [ ] Each task carries 2–3 checkable acceptance criteria; a task is closed only when they pass together with the project's standing bar (the `definition-of-done` reference inside `verification-before-completion`)
+- [ ] Every task has an `Interfaces` line: what it consumes and what it produces for the next task
+- [ ] The header carries Spec, Repository and Global Constraints
+- [ ] The `## Tasks` section exists (`- [ ] Task N: …`) and matches the `### Task N` sections
 - [ ] File paths are exact
 - [ ] Code examples are complete (copy-pasteable)
 - [ ] Commands are exact with expected output
