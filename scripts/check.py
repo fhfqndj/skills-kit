@@ -857,6 +857,7 @@ def run(repo: Path = REPO) -> Report:
 
     descriptions: dict[str, str] = {}
     related_map: dict[str, set[str]] = {}
+    groups: dict[str, str] = {}
     for rel, skill_md in skill_dirs:
         name = skill_md.parent.name
         text = skill_md.read_text(errors="ignore")
@@ -868,6 +869,8 @@ def run(repo: Path = REPO) -> Report:
         if description:
             descriptions[name] = description
         related_map[name] = set()
+        group_match = re.search(r"^\s+group:\s*(\S+)", text, re.M)
+        groups[name] = group_match.group(1) if group_match else ""
         related, related_errors = related_skills_from_frontmatter(text)
         for error in related_errors:
             report.errors.append(f"{rel}: {error}")
@@ -945,10 +948,36 @@ def run(repo: Path = REPO) -> Report:
 
     if not readme.is_file():
         report.errors.append("нет README.md")
-    elif f"Навыков — **{len(skill_names)}**" not in readme.read_text(errors="ignore"):
-        report.errors.append(
-            f"README.md: нет строки «Навыков — **{len(skill_names)}**» — число разъехалось"
-        )
+    else:
+        readme_text = readme.read_text(errors="ignore")
+        if f"Навыков — **{len(skill_names)}**" not in readme_text:
+            report.errors.append(
+                f"README.md: нет строки «Навыков — **{len(skill_names)}**» — число разъехалось"
+            )
+        actual_groups = {name: 0 for name in GROUPS}
+        for group in groups.values():
+            if group in actual_groups:
+                actual_groups[group] += 1
+        expected = "(`core` — {core}, `git` — {git}, `code` — {code})".format(**actual_groups)
+        match = re.search(r"\(`core` — \d+, `git` — \d+, `code` — \d+\)", readme_text)
+        if match is None:
+            report.errors.append(f"README.md: нет разбивки по группам — ожидается {expected}")
+        elif match.group(0) != expected:
+            report.errors.append(f"README.md: разбивка по группам {match.group(0)}, а фактически {expected}")
+        if index.is_file():
+            levels = {name: level for name, _, level in INDEX_ROW.findall(index.read_text(errors="ignore"))}
+            actual_l1 = sum(1 for level in levels.values() if level == "L1")
+            actual_l2 = sum(1 for level in levels.values() if level == "L2")
+            level_match = re.search(r"L1 — \*\*(\d+)\*\*, L2 — \*\*(\d+)\*\*", readme_text)
+            if level_match is None:
+                report.errors.append(
+                    f"README.md: нет разбивки по уровням — ожидается L1 — **{actual_l1}**, L2 — **{actual_l2}**"
+                )
+            elif (int(level_match.group(1)), int(level_match.group(2))) != (actual_l1, actual_l2):
+                report.errors.append(
+                    f"README.md: уровни L1 {level_match.group(1)}/L2 {level_match.group(2)}, "
+                    f"а фактически L1 {actual_l1}/L2 {actual_l2}"
+                )
     if not index.is_file():
         report.errors.append("нет INDEX.md")
     else:
