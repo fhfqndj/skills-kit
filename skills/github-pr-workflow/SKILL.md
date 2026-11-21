@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.6
+version: 1.3.7
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -145,6 +145,8 @@ The `POST /repos/$OWNER/$REPO/pulls` body (head/base, draft flag) — `reference
 Loop: list runs on the branch (`gh run list --branch $(git branch --show-current)`), read the failure (`gh run view <RUN_ID> --log-failed`), fix in place, commit, push, re-check. Failure patterns per stack and the decision tree — `references/ci-troubleshooting.md`. Three attempts and still red — ask the user instead of pushing a fourth guess.
 
 ## 6. Merging
+
+If the project reserves merges for its owner, stop after the PR and do not run the commands below.
 
 **With gh:**
 
