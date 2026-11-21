@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.3
+version: 1.3.4
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -79,6 +79,8 @@ git checkout -b feature/add-user-authentication
 ```
 
 Branch names follow the project's naming skill (`git-naming`): allowed actions, description rules and branch lifetime live there, not here. If the project has no such convention, `feature/` and `fix/` are the safe minimum.
+
+**Gate — before the first edit, not after the twentieth commit.** In a repository whose history shows merged PRs, a commit straight to the default branch is a process violation: create the branch first, because moving commits afterwards means rewriting published history. A version bump, a tag and a published release are never part of the feature PR: they are separate, owner-decided steps, and a tag starts the publication.
 
 ## 2. Making Commits
 
