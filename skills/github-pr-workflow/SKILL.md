@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.4
+version: 1.3.5
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
