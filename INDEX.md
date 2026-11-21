@@ -30,7 +30,7 @@
 | [`skill-sourcing`](skills/skill-sourcing/SKILL.md) | L1 | нужен готовый навык, промпт или автоматизация: поиск до своей работы | 2 |
 | [`mcp-search`](skills/mcp-search/SKILL.md) | L1 | нужен готовый MCP-сервер или подключение | 2 |
 | [`subagent-driven-development`](skills/subagent-driven-development/SKILL.md) | L1 | утверждённый план исполняется задача за задачей через субагентов | 1 |
-| [`using-skills-kit`](skills/using-skills-kit/SKILL.md) | L1 | начало любой задачи: сначала проверить каталог навыков | 2 |
+| [`using-skills-kit`](skills/using-skills-kit/SKILL.md) | L1 | начало любой задачи: сначала проверить каталог навыков | 3 |
 | [`verification-before-completion`](skills/verification-before-completion/SKILL.md) | L1 | перед «готово / исправлено / проходит»: свежее доказательство | 2 |
 
 ## Git и GitHub — `git`
