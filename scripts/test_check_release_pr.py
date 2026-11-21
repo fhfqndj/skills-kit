@@ -70,6 +70,27 @@ class CliTests(unittest.TestCase):
         self.assertEqual(result.returncode, 2)
         self.assertIn("нет файла", result.stderr)
 
+    def test_json_object_fails(self) -> None:
+        result = self.run_cli({"message": "Not Found"})
+        self.assertEqual(result.returncode, 2)
+        self.assertIn("не JSON-массив", result.stderr)
+
+    def test_non_object_entries_fail(self) -> None:
+        for payload in ([None], ["x"]):
+            with self.subTest(payload=payload):
+                result = self.run_cli(payload)
+                self.assertEqual(result.returncode, 1)
+                self.assertIn("влитого в master", result.stderr)
+
+    def test_merged_pr_second_passes(self) -> None:
+        result = self.run_cli([pull(merged=False), pull()])
+        self.assertEqual(result.returncode, 0, result.stderr)
+
+    def test_mixed_unmerged_and_other_base_fails(self) -> None:
+        result = self.run_cli([pull(merged=False), pull(base="develop")])
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("влитого в master", result.stderr)
+
 
 if __name__ == "__main__":
     unittest.main(verbosity=2)

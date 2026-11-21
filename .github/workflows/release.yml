@@ -45,17 +45,26 @@ jobs:
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
+      # Гейт запускает scripts/check_release_pr.py из дерева тега: перевыпуск
+      # тегов, созданных до появления этого workflow, новой проверкой не поддерживается.
       - name: Require a merged pull request
         env:
           GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+          TAG: ${{ steps.tag.outputs.tag }}
         run: |
-          sha="$(git rev-parse "${{ steps.tag.outputs.tag }}^{commit}")"
+          if git rev-parse -q --verify "refs/tags/$TAG" >/dev/null; then
+            sha="$(git rev-parse "refs/tags/$TAG^{commit}")"
+          else
+            echo "тег $TAG ещё не создан — проверяю HEAD"
+            sha="$(git rev-parse HEAD)"
+          fi
           git fetch --no-tags origin master
           if ! git merge-base --is-ancestor "$sha" origin/master; then
             echo "ошибка: коммит $sha не входит в master — релиз только из влитого PR" >&2
             exit 1
           fi
-          if ! gh api "repos/${{ github.repository }}/commits/$sha/pulls" > "$RUNNER_TEMP/pulls.json"; then
+          if ! gh api "repos/$REPO/commits/$sha/pulls" > "$RUNNER_TEMP/pulls.json"; then
             echo "ошибка: не удалось получить PR для $sha" >&2
             exit 1
           fi
