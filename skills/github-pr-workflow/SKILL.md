@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.5
+version: 1.3.6
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -170,7 +170,7 @@ Issues: `gh issue create --title … --body-file templates/bug-report.md --label
 
 Releases, topics, branch protection, Actions secrets and workflows, gists — `references/github-api-cheatsheet.md`. Cloning, forking and repository settings through the API — `references/git-curl-basics.md`, `references/git-curl-advanced.md`. Repos across an organization — `references/org-grouping.md`.
 
-Versions in the manifests are bumped by the author of the change in the regular PR (the `check_versions` gate); the tag and the publication are a separate owner decision after the PR is merged.
+Versions in the manifests are bumped by the author of the change in the regular PR; the tag and the publication are a separate owner decision after the PR is merged.
 
 ## Files
 
