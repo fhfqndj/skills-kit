@@ -80,7 +80,7 @@ git checkout -b feature/add-user-authentication
 
 Branch names follow the project's naming skill (`git-naming`): allowed actions, description rules and branch lifetime live there, not here. If the project has no such convention, `feature/` and `fix/` are the safe minimum.
 
-**Gate — before the first edit, not after the twentieth commit.** In a repository whose history shows merged PRs, a commit straight to the default branch is a process violation: create the branch first, because moving commits afterwards means rewriting published history. A version bump, a tag and a published release are never part of the feature PR: they are separate, owner-decided steps, and a tag starts the publication.
+**Gate — before the first edit, not after the twentieth commit.** Unless the project explicitly says otherwise, a commit straight to the default branch is a process violation: create the branch first, because moving commits afterwards means rewriting published history.
 
 ## 2. Making Commits
 
@@ -169,6 +169,8 @@ Merge methods: `"merge"` (merge commit), `"squash"`, `"rebase"`
 Issues: `gh issue create --title … --body-file templates/bug-report.md --label …`; list, filter, triage, bulk edits and every `curl` fallback — `references/issues-api.md`. Feature requests — `templates/feature-request.md`.
 
 Releases, topics, branch protection, Actions secrets and workflows, gists — `references/github-api-cheatsheet.md`. Cloning, forking and repository settings through the API — `references/git-curl-basics.md`, `references/git-curl-advanced.md`. Repos across an organization — `references/org-grouping.md`.
+
+Versions in the manifests are bumped by the author of the change in the regular PR (the `check_versions` gate); the tag and the publication are a separate owner decision after the PR is merged.
 
 ## Files
 
