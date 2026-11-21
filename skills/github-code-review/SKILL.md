@@ -1,7 +1,7 @@
 ---
 name: github-code-review
 description: "Use when you review PR code: diffs, inline comments."
-version: 1.2.2
+version: 1.3.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -94,6 +94,12 @@ git diff $BASE...HEAD | grep -n "<<<<<<\|>>>>>>\|======="
 ### Review Output Format
 
 When reviewing local changes, present findings as **Critical / Warnings / Suggestions / Looks Good**, each finding with `file:line` and a concrete fix. The worked example, severity guide and verdict rules — `references/review-output-template.md`.
+
+### Project review rules and the report file
+
+The project states its own review policy in `.agents/review-rules/` — flat `*.md` files, or one directory per area (`backend/`, `frontend/`, …). Load the files whose area matches the changed paths. They are policy: where one disagrees with the generic checklist, the project rule wins; where the project is silent, the checklist applies.
+
+Every review run leaves a report at `.agents/review-reports/YYYY-MM-DD-<slug>.md` — the same severity blocks you post, findings with `file:line`, and the verdict. One file per run, append on a same-day repeat. The folder is an artifact: exclude it from git and never commit it.
 
 ---
 

@@ -1,7 +1,7 @@
 ---
 name: requesting-code-review
 description: "Use when pre-commit review: security scan, gates, auto-fix."
-version: 2.4.3
+version: 2.5.0
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -104,6 +104,26 @@ Quick scan before dispatching the reviewer:
 security · performance. Every finding names its axis; the questions per axis and
 the "blocks merge" bar are in `references/review-quality.md`. Security beyond the
 regex scan — trust boundaries, path containment, audit triage: `references/security-checks.md`.
+
+## Project review rules — `.agents/review-rules/`
+
+The project keeps its own review policy in `.agents/review-rules/`: either flat
+`*.md` files or one directory per area (`backend/`, `frontend/`, `db-migrations/`,
+`security/`, …). Read the changed paths first (`git diff --cached --name-only`),
+then load the files whose area matches them plus every flat file.
+
+- These are project policy, not suggestions. Where a project rule and the generic
+  checklist disagree, the project rule wins; where the project is silent, the
+  checklist applies.
+- Hand the loaded text to the reviewer subagent in Step 5 and require it to name
+  the rule behind every finding.
+- Do not paste rules that cannot apply to this diff: the reviewer has a context
+  budget, and a migration rule in a CSS diff is noise.
+
+Save the verdict to `.agents/review-reports/YYYY-MM-DD-<slug>.md`: verdict,
+findings with `file:line`, and the evidence (commands and exit codes). One file
+per run; same day and slug — append. The folder is an artifact and never enters
+git: add `.agents/review-reports/` to the exclude list once, and say that you did.
 
 ## Dependency discipline (if the diff touches dependencies)
 
