@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.8
+version: 1.3.9
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -22,6 +22,10 @@ Complete guide for managing the PR lifecycle. Each section shows the `gh` way fi
 - Merging (squash / merge / rebase), enabling auto-merge, deleting the branch.
 - Issues, releases, topics, branch protection and Actions secrets — the commands are in the references below.
 - Not for judging the code (`github-code-review`) or for getting access (`github-auth`).
+
+**Titles are English.** A PR or issue title is always written in English; its body
+follows the language of the user who asks for the work. Skeleton headings are English
+too, and they are translated when the user writes in another language.
 
 ## Prerequisites
 
@@ -132,10 +136,8 @@ Closes #42"
 ```
 
 Options: `--draft`, `--reviewer user1,user2`, `--label "enhancement"`, `--base develop`.
-Body skeletons — `templates/pr-body-feature.md`, `templates/pr-body-bugfix.md`.
-
-**Titles are English.** A PR or issue title is always written in English; its body is
-written in the language of the user who asks for the work.
+Body skeletons — `templates/pr-body-feature.md`, `templates/pr-body-bugfix.md`;
+translate their headings into the language of the body.
 
 The `POST /repos/$OWNER/$REPO/pulls` body (head/base, draft flag) — `references/curl-recipes.md`.
 
