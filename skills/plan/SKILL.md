@@ -1,7 +1,7 @@
 ---
 name: plan
 description: "Use when writing a markdown plan; do not build."
-version: 2.5.0
+version: 2.5.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -29,7 +29,7 @@ For this turn, you are planning only.
 - Do not edit project files except the plan markdown file.
 - Do not run mutating shell commands, commit, push, or perform external actions.
 - You may inspect the repo or other context with read-only commands/tools when needed.
-- Your deliverable is a markdown plan saved inside the active workspace, by default under the plan directory `plans/` (the plan directory and its path are set by the host).
+- Your deliverable is a markdown plan saved inside the active workspace, by default under the plan directory `.agents/plans/` (the plan directory and its path are set by the host).
 
 ## Output requirements
 
@@ -49,18 +49,18 @@ If the task is code-related, include exact file paths, likely test targets, and 
 ## Save location
 
 Save the plan (write the file) under:
-- `plans/YYYY-MM-DD_HHMMSS-<slug>.md`
+- `.agents/plans/YYYY-MM-DD_HHMMSS-<slug>.md`
 
 Treat that as relative to the active working directory / workspace root: a relative path keeps the plan with the workspace on local, remote and container backends alike.
 
-**The active directory is not always the project being planned.** If the session runs from a different repo or vault than the one the plan is about (for example the vault is open, while the target is a project in another directory), `plans/` under the CWD drops the plan into the wrong repository. Save by absolute path inside the target project — `<repo>/plans/YYYY-MM-DD_HHMMSS-<slug>.md` — and state that path in the reply. `plans/` is usually untracked: either add it to `.gitignore` or leave the plan out of the index, and say which you did.
+**The active directory is not always the project being planned.** If the session runs from a different repo or vault than the one the plan is about (for example the vault is open, while the target is a project in another directory), `.agents/plans/` under the CWD drops the plan into the wrong repository. Save by absolute path inside the target project — `<repo>/.agents/plans/YYYY-MM-DD_HHMMSS-<slug>.md` — and state that path in the reply. `.agents/` is the project-local agent folder: keep `.agents/plans/` out of git by adding it to `.git/info/exclude` or `.gitignore` (other subfolders of `.agents/` may be committed), and never commit the plan itself.
 
 If the runtime provides a specific target path, use that exact path. The exact plan directory is set by the host itself.
-If not, create a sensible timestamped filename yourself under `plans/`.
+If not, create a sensible timestamped filename yourself under `.agents/plans/`.
 
 ## Existing plans: never start from a clean sheet
 
-Before writing a new plan, check for unchecked items in the plans that already exist: `grep -rn '^- \[ \]' plans/*.md`.
+Before writing a new plan, check for unchecked items in the plans that already exist: `grep -rn '^- \[ \]' .agents/plans/*.md`.
 
 - The new work extends an open plan → update it in place, or carry its unchecked items into the new plan with a link to the old file.
 - It is unrelated work → carry the open items into the new plan as an explicit tail ("inherited from `<plan>`: N open items") or ask the user where they should go. Do not silently start clean: the open items may be mid-build in another session.
@@ -75,9 +75,9 @@ Before writing a new plan, check for unchecked items in the plans that already e
 
 ### The user is thinking out loud — do not execute, do not write a plan file
 
-Openings like "что будем делать?", "сегодня план такой…", "приступать не надо, просто думаю" mean conversational mode, not plan mode either: only reading and reconnaissance, and the reply is analysis — order of work, risks, and the decisions that stay with the user. Starting the work or creating `plans/*.md` is allowed on an explicit request only.
+Openings like "что будем делать?", "сегодня план такой…", "приступать не надо, просто думаю" mean conversational mode, not plan mode either: only reading and reconnaissance, and the reply is analysis — order of work, risks, and the decisions that stay with the user. Starting the work or creating `.agents/plans/*.md` is allowed on an explicit request only.
 
-Before answering, rebuild the state from facts, never from memory alone: the run journal of the workspace (`<workspace>/RUNS.md`), `git status --short --branch` for every active repo, the most recent session from past-session history (read its last messages), and `grep '^- \[ \]'` over `plans/*.md` for unchecked items. Only then propose what to do next.
+Before answering, rebuild the state from facts, never from memory alone: the run journal of the workspace (`<workspace>/RUNS.md`), `git status --short --branch` for every active repo, the most recent session from past-session history (read its last messages), and `grep '^- \[ \]'` over `.agents/plans/*.md` for unchecked items. Only then propose what to do next.
 
 Lay the options out as a numbered list in the message, not through a blocking question form: a form can leave the turn waiting for an answer that never comes, while text asks the same and does not block.
 
