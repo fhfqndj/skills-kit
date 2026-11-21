@@ -1,7 +1,7 @@
 ---
 name: using-skills-kit
 description: "Открывать в начале задачи: проверить навыки."
-version: 1.2.0
+version: 1.2.2
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -41,6 +41,7 @@ metadata:
 | Есть утверждённый план | `subagent-driven-development` |
 | «Готово / проходит / исправлено» | `verification-before-completion` |
 | Перед коммитом или PR | `requesting-code-review` |
+| Пуш, тег, релиз | `github-pr-workflow` |
 | Баг непонятен | `systematic-debugging` |
 | Пишется логика | `test-driven-development` |
 | Задача делится на куски | `delegating-to-subagents` |

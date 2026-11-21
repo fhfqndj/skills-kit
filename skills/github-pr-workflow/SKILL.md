@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.3
+version: 1.3.7
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -80,6 +80,8 @@ git checkout -b feature/add-user-authentication
 
 Branch names follow the project's naming skill (`git-naming`): allowed actions, description rules and branch lifetime live there, not here. If the project has no such convention, `feature/` and `fix/` are the safe minimum.
 
+**Gate — before the first edit, not after the twentieth commit.** Unless the project explicitly says otherwise, a commit straight to the default branch is a process violation: create the branch first, because moving commits afterwards means rewriting published history.
+
 ## 2. Making Commits
 
 Make the changes in the files, then commit:
@@ -144,6 +146,8 @@ Loop: list runs on the branch (`gh run list --branch $(git branch --show-current
 
 ## 6. Merging
 
+If the project reserves merges for its owner, stop after the PR and do not run the commands below.
+
 **With gh:**
 
 ```bash
@@ -167,6 +171,8 @@ Merge methods: `"merge"` (merge commit), `"squash"`, `"rebase"`
 Issues: `gh issue create --title … --body-file templates/bug-report.md --label …`; list, filter, triage, bulk edits and every `curl` fallback — `references/issues-api.md`. Feature requests — `templates/feature-request.md`.
 
 Releases, topics, branch protection, Actions secrets and workflows, gists — `references/github-api-cheatsheet.md`. Cloning, forking and repository settings through the API — `references/git-curl-basics.md`, `references/git-curl-advanced.md`. Repos across an organization — `references/org-grouping.md`.
+
+Versions in the manifests are bumped by the author of the change in the regular PR; the tag and the publication are a separate owner decision after the PR is merged.
 
 ## Files
 

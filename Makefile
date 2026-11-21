@@ -55,6 +55,11 @@ test:
 	else \
 		echo "scripts/test_check_versions.py нет — пропущено"; \
 	fi
+	@if [ -f ./scripts/test_check_release_pr.py ]; then \
+		$(PYTHON) ./scripts/test_check_release_pr.py; \
+	else \
+		echo "scripts/test_check_release_pr.py нет — пропущено"; \
+	fi
 	@if [ -f ./scripts/test_smoke_examples.py ]; then \
 		$(PYTHON) ./scripts/test_smoke_examples.py; \
 	else \
