@@ -1,7 +1,7 @@
 ---
 name: github-pr-workflow
 description: "Use when working a GitHub repo: issues, PR, CI."
-version: 1.3.7
+version: 1.3.10
 author: fhfqndj
 license: MIT
 platforms: [linux, macos, windows]
@@ -22,6 +22,8 @@ Complete guide for managing the PR lifecycle. Each section shows the `gh` way fi
 - Merging (squash / merge / rebase), enabling auto-merge, deleting the branch.
 - Issues, releases, topics, branch protection and Actions secrets — the commands are in the references below.
 - Not for judging the code (`github-code-review`) or for getting access (`github-auth`).
+
+**Titles are English.** A PR or issue title is always written in English.
 
 ## Prerequisites
 
